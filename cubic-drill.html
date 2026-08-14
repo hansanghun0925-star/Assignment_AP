@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>삼차함수 개형 훈련 — 비율관계</title>
+<style>
+:root{
+  --paper:#E9EEF1;
+  --paper-2:#F6F8F9;
+  --grid:#C7D6DF;
+  --grid-strong:#A8BCC9;
+  --ink:#152430;
+  --ink-2:#4B6070;
+  --ink-3:#7E9099;
+  --curve:#1B5E7E;
+  --mark:#C2402F;
+  --ok:#1C6B4C;
+  --hl:#F2CE3F;
+  --hl-2:#B58E00;
+  --rule:#B9C9D3;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--paper);
+  background-image:linear-gradient(var(--grid) .5px,transparent .5px),linear-gradient(90deg,var(--grid) .5px,transparent .5px);
+  background-size:26px 26px;
+  color:var(--ink);
+  font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",sans-serif;
+  font-size:15px;line-height:1.6;
+  padding:20px 16px 64px;
+}
+.wrap{max-width:1080px;margin:0 auto}
+.math{font-family:"Cambria Math",Cambria,"Times New Roman",serif}
+.math i{font-style:italic}
+
+header.top{
+  display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px;
+  border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:18px;
+}
+h1{font-size:20px;margin:0;letter-spacing:-.01em;font-weight:600}
+.sub{font-size:12px;color:var(--ink-2);letter-spacing:.08em;text-transform:uppercase}
+.spacer{flex:1}
+.stats{display:flex;gap:16px;font-size:12px;color:var(--ink-2)}
+.stats b{display:block;font-size:19px;color:var(--ink);font-weight:600;line-height:1.2}
+
+.panel{background:var(--paper-2);border:1px solid var(--rule);border-radius:2px;padding:14px 16px;margin-bottom:16px}
+.panel h2{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin:0 0 10px;font-weight:600}
+
+.opts{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+label.chk{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;user-select:none}
+label.chk input{accent-color:var(--curve);width:16px;height:16px;margin:0}
+
+button{
+  font-family:inherit;font-size:14px;padding:8px 16px;border-radius:2px;cursor:pointer;
+  border:1px solid var(--ink);background:var(--ink);color:var(--paper-2);
+}
+button:hover{background:#0C1A24}
+button.ghost{background:transparent;color:var(--ink)}
+button.ghost:hover{background:#DDE5EA}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible,label.chk input:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:860px){.cols{grid-template-columns:1fr}}
+
+.qhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.tag{font-size:11px;letter-spacing:.08em;border:1px solid var(--rule);padding:2px 7px;color:var(--ink-2);border-radius:2px}
+.fx{font-size:26px;margin:8px 0 16px;letter-spacing:.01em}
+@media(max-width:520px){.fx{font-size:21px}}
+
+.q{border-top:1px solid var(--rule);padding:12px 0}
+.q:first-of-type{border-top:none}
+.qt{font-size:11px;letter-spacing:.1em;color:var(--hl-2);font-weight:600;margin-bottom:6px}
+.qbody{font-size:14px;margin-bottom:8px}
+.fields{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.f{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2)}
+input[type=number]{
+  font-family:"Cambria Math",Cambria,serif;font-size:16px;width:74px;padding:6px 8px;text-align:center;
+  border:1px solid var(--grid-strong);border-radius:2px;background:#fff;color:var(--ink);
+}
+input[type=number].good{border-color:var(--ok);background:#EAF4EF}
+input[type=number].bad{border-color:var(--mark);background:#FBECEA}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+.verdict{font-size:13px;margin-top:8px;font-weight:600}
+.verdict.ok{color:var(--ok)}
+.verdict.no{color:var(--mark)}
+.why{font-size:13px;color:var(--ink-2);margin-top:4px}
+.why .math{color:var(--ink)}
+
+.gwrap{background:var(--paper-2);border:1px solid var(--rule);border-radius:2px;padding:10px}
+svg{display:block;width:100%;height:auto}
+.veil{display:flex;align-items:center;justify-content:center;height:300px;color:var(--ink-3);font-size:14px;text-align:center;padding:0 24px;border:1px dashed var(--grid-strong);border-radius:2px}
+
+table.mono{width:100%;border-collapse:collapse;margin-top:12px;font-family:"Cambria Math",Cambria,serif;font-size:15px}
+table.mono th,table.mono td{border:1px solid var(--rule);padding:6px 4px;text-align:center}
+table.mono th{background:#DFE7EC;font-weight:600;font-size:13px;font-family:inherit}
+.hint{font-size:13px;color:var(--ink-2);margin-top:10px;padding-left:10px;border-left:2px solid var(--hl)}
+.foot{font-size:12px;color:var(--ink-3);margin-top:22px;text-align:center}
+.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:#DFE7EC;color:var(--ink-2);margin-left:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="sub">미적분 · 삼차함수</div>
+    <h1>개형 훈련소 <span class="pill" id="poolsize"></span></h1>
+  </div>
+  <div class="spacer"></div>
+  <div class="stats">
+    <div>맞힌 문항<b id="stCorrect">0</b></div>
+    <div>푼 문항<b id="stTotal">0</b></div>
+    <div>정답률<b id="stRate">—</b></div>
+    <div>연속<b id="stStreak">0</b></div>
+  </div>
+</header>
+
+<section class="panel">
+  <h2>문항 설정</h2>
+  <div class="opts">
+    <label class="chk"><input type="checkbox" id="t1" checked>극점 · 변곡점</label>
+    <label class="chk"><input type="checkbox" id="t2" checked><span class="math"><i>y</i>=<i>k</i></span> 교점 개수</label>
+    <label class="chk"><input type="checkbox" id="t3" checked>1 : 1 : 1 : 1</label>
+    <label class="chk"><input type="checkbox" id="t4" checked>1 : √3</label>
+    <label class="chk"><input type="checkbox" id="noext">극값 없는 개형 섞기</label>
+    <label class="chk"><input type="checkbox" id="wrongonly">오답 문제만</label>
+  </div>
+  <div class="btnrow">
+    <button id="newBtn">새 문제</button>
+    <button class="ghost" id="resetBtn">기록 지우기</button>
+    <span class="f" id="bankInfo"></span>
+  </div>
+</section>
+
+<div class="cols">
+  <section class="panel" id="qpanel">
+    <div class="qhead">
+      <h2 style="margin:0">문제 <span id="qno"></span></h2>
+      <span class="tag" id="qtag"></span>
+    </div>
+    <div class="fx math" id="fx"></div>
+    <div id="qs"></div>
+    <div class="btnrow">
+      <button id="gradeBtn">채점</button>
+      <button class="ghost" id="nextBtn" disabled>다음 문제</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="gwrap">
+      <div id="graphBox"><div class="veil">채점하면 개형이 공개됩니다.<br>먼저 종이에 그려보세요.</div></div>
+      <div class="opts" id="ovBox" style="margin-top:10px;display:none">
+        <label class="chk"><input type="checkbox" id="ov1" checked>등간격 1:1:1:1</label>
+        <label class="chk"><input type="checkbox" id="ov2" checked>1:√3</label>
+      </div>
+    </div>
+    <div id="tableBox"></div>
+  </section>
+</div>
+
+<p class="foot">종이에 개형을 먼저 그린 뒤 특징값을 입력하세요. 기록은 이 브라우저에만 저장됩니다.</p>
+</div>
+
+<script>
+"use strict";
+const S3 = Math.sqrt(3);
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+/* ---------- 문제 생성: f(x) = a(x-m)^3 + 3ak(x-m) + n ---------- */
+function build(a,m,k,n,id){
+  const d = k<0 ? Math.sqrt(-k) : 0;
+  const hasExt = k<0;
+  const c3=a, c2=-3*a*m, c1=3*a*(m*m+k), c0=-a*m*m*m-3*a*k*m+n;
+  const f = x => { const t=x-m; return a*t*t*t + 3*a*k*t + n; };
+  const p = {id,a,m,k,n,d,hasExt,c3,c2,c1,c0,f};
+  if(hasExt){
+    const cube = 2*a*d*d*d;
+    const vL = n+cube, vR = n-cube;              // x=m-d, x=m+d
+    if(a>0){ p.maxX=m-d; p.maxY=vL; p.minX=m+d; p.minY=vR; }
+    else   { p.maxX=m+d; p.maxY=vR; p.minX=m-d; p.minY=vL; }
+    p.vTop=Math.max(vL,vR); p.vBot=Math.min(vL,vR);
+    p.crossMax = p.maxX===m-d ? m+2*d : m-2*d;   // 극댓값 수평선과 다시 만나는 점
+    p.crossMin = p.minX===m-d ? m+2*d : m-2*d;
+    p.rootBig = m + S3*d;                        // 변곡점 수평선 교점 중 최대
+    p.intCount = p.vTop - p.vBot - 1;            // 세 점에서 만나는 정수 k 개수
+    const rnd = mulberry32(id*7919+13);
+    const pick = rnd();
+    p.K = pick<0.22 ? p.vTop : pick<0.44 ? p.vBot
+        : pick<0.62 ? p.vTop+1+Math.floor(rnd()*2)
+        : pick<0.80 ? p.vBot-1-Math.floor(rnd()*2)
+        : Math.round((p.vTop+p.vBot)/2);
+  } else {
+    p.intCount = 0;
+    p.K = n + (k===0 ? 0 : 2);
+  }
+  p.cross = K => { if(!p.hasExt) return 1; if(K>p.vTop||K<p.vBot) return 1; if(K===p.vTop||K===p.vBot) return 2; return 3; };
+  return p;
+}
+
+const POOL=(function(){
+  const raw=[], seen=new Set();
+  const push=(a,m,k,n)=>{const key=[a,m,k,n].join(",");if(!seen.has(key)){seen.add(key);raw.push([a,m,k,n]);}};
+  const ms=[-2,-1,0,1,2]; let i=0;
+  for(const a of [1,-1,2,-2,3,-3]){
+    for(const d of [1,2,3]){
+      const S=2*Math.abs(a)*d*d*d;
+      if(S>54) continue;
+      for(const cat of ["sym","tan+","tan-","one","off"]){
+        const m=ms[i++%5];
+        let n;
+        if(cat==="sym") n=0;
+        else if(cat==="tan+") n=S;
+        else if(cat==="tan-") n=-S;
+        else if(cat==="one") n=S+2;
+        else n=Math.max(1,Math.floor(S/2));
+        push(a,m,-d*d,n);
+      }
+    }
+  }
+  const noext=[];
+  for(const a of [1,-1,2,-2]) for(const mn of [[0,0],[1,-2],[-1,3]]) noext.push([a,mn[0],0,mn[1]]);
+  for(const a of [1,-1]) for(const k of [1,2]) for(const mn of [[0,0],[1,2]]) noext.push([a,mn[0],k,mn[1]]);
+  const out=raw.map((r,j)=>build(r[0],r[1],r[2],r[3],j+1));
+  const out2=noext.map((r,j)=>build(r[0],r[1],r[2],r[3],1000+j));
+  return {ext:out, flat:out2, all:out.concat(out2)};
+})();
+document.getElementById("poolsize").textContent = POOL.all.length + "세트";
+
+/* ---------- 식 표기 ---------- */
+function poly(p){
+  const T=[[p.c3,3],[p.c2,2],[p.c1,1],[p.c0,0]];
+  let s="";
+  for(const [c,e] of T){
+    if(c===0) continue;
+    const abs=Math.abs(c);
+    s += s==="" ? (c<0?"&minus;":"") : (c<0?" &minus; ":" + ");
+    if(abs!==1||e===0) s+=abs;
+    if(e>0) s+="<i>x</i>";
+    if(e>1) s+="<sup>"+e+"</sup>";
+  }
+  return s==="" ? "0" : s;
+}
+const sg = v => (v<0?"&minus;":"")+Math.abs(v);
+
+/* ---------- 상태 ---------- */
+const LS="cubicDrill.v1";
+let rec = (()=>{try{return JSON.parse(localStorage.getItem(LS))||{}}catch(e){return{}}})();
+rec.correct=rec.correct||0; rec.total=rec.total||0; rec.streak=rec.streak||0; rec.bank=rec.bank||[];
+const save=()=>{try{localStorage.setItem(LS,JSON.stringify(rec))}catch(e){}};
+function paintStats(){
+  document.getElementById("stCorrect").textContent=rec.correct;
+  document.getElementById("stTotal").textContent=rec.total;
+  document.getElementById("stRate").textContent=rec.total?Math.round(rec.correct/rec.total*100)+"%":"—";
+  document.getElementById("stStreak").textContent=rec.streak;
+  document.getElementById("bankInfo").textContent=rec.bank.length?("오답 보관 "+rec.bank.length+"문제"):"";
+}
+paintStats();
+
+let cur=null, graded=false, items=[];
+const $=id=>document.getElementById(id);
+const on=id=>$(id).checked;
+
+function ratioNeeded(){return on("t3")||on("t4");}
+function nextProblem(){
+  let pool = on("noext") ? POOL.all : POOL.ext;
+  let note = "";
+  if(on("wrongonly")){
+    const set=new Set(rec.bank);
+    const sub=pool.filter(p=>set.has(p.id));
+    if(sub.length) pool=sub;
+    else note = "보관된 오답이 없어 전체에서 출제합니다.";
+  }
+  $("bankInfo").textContent = note || (rec.bank.length?("오답 보관 "+rec.bank.length+"문제"):"");
+  let cand = pool[Math.floor(Math.random()*pool.length)];
+  if(cur && pool.length>1) while(cand.id===cur.id) cand=pool[Math.floor(Math.random()*pool.length)];
+  cur=cand; graded=false;
+  render();
+}
+
+/* ---------- 문항 렌더 ---------- */
+function render(){
+  $("qno").textContent="#"+cur.id;
+  $("qtag").textContent = cur.hasExt ? "극점 간격 2·"+cur.d : (cur.k===0?"극값 없음 (중근형)":"극값 없음 (단조)");
+  $("fx").innerHTML="<i>f</i>(<i>x</i>) = "+poly(cur);
+  items=[];
+  let h="";
+  const box=(label,key,ph)=>`<span class="f">${label}<input type="number" step="1" data-k="${key}" placeholder="${ph||""}"></span>`;
+
+  if(on("t1")){
+    h+=`<div class="q"><div class="qt">유형 1 — 극점 · 변곡점</div>`;
+    if(cur.hasExt){
+      h+=`<div class="qbody">극대점과 극소점의 좌표, 변곡점의 좌표를 구하세요.</div><div class="fields">
+      ${box("극대 <span class='math'><i>x</i></span> =","maxX")}${box("극댓값 =","maxY")}
+      ${box("극소 <span class='math'><i>x</i></span> =","minX")}${box("극솟값 =","minY")}
+      ${box("변곡점 <span class='math'><i>x</i></span> =","infX")}${box("변곡점 <span class='math'><i>y</i></span> =","infY")}</div>`;
+      items.push({k:"maxX",v:cur.maxX},{k:"maxY",v:cur.maxY},{k:"minX",v:cur.minX},{k:"minY",v:cur.minY},{k:"infX",v:cur.m},{k:"infY",v:cur.n});
+    }else{
+      h+=`<div class="qbody">극값의 개수와 변곡점의 좌표를 구하세요.</div><div class="fields">
+      ${box("극값의 개수 =","nExt")}${box("변곡점 <span class='math'><i>x</i></span> =","infX")}${box("변곡점 <span class='math'><i>y</i></span> =","infY")}</div>`;
+      items.push({k:"nExt",v:0},{k:"infX",v:cur.m},{k:"infY",v:cur.n});
+    }
+    h+=`</div>`;
+  }
+  if(on("t2")){
+    h+=`<div class="q"><div class="qt">유형 2 — 수평선과의 교점</div>
+    <div class="qbody">직선 <span class="math"><i>y</i> = ${sg(cur.K)}</span> 과 만나는 서로 다른 점의 개수, 그리고 직선 <span class="math"><i>y</i> = <i>k</i></span> 가 곡선과 <b>서로 다른 세 점</b>에서 만나도록 하는 정수 <span class="math"><i>k</i></span> 의 개수를 구하세요.</div>
+    <div class="fields">${box("교점 개수 =","cnt")}${box("정수 <span class='math'><i>k</i></span> 개수 =","kcnt")}</div></div>`;
+    items.push({k:"cnt",v:cur.cross(cur.K)},{k:"kcnt",v:cur.intCount});
+  }
+  if(on("t3")){
+    h+=`<div class="q"><div class="qt">유형 3 — 1 : 1 : 1 : 1</div>`;
+    if(cur.hasExt){
+      h+=`<div class="qbody">극댓값을 지나는 수평선이 곡선과 <b>다시</b> 만나는 점의 <span class="math"><i>x</i></span> 좌표, 극솟값을 지나는 수평선이 곡선과 다시 만나는 점의 <span class="math"><i>x</i></span> 좌표를 구하세요.</div>
+      <div class="fields">${box("극댓값 쪽 <span class='math'><i>x</i></span> =","cMax")}${box("극솟값 쪽 <span class='math'><i>x</i></span> =","cMin")}</div>`;
+      items.push({k:"cMax",v:cur.crossMax},{k:"cMin",v:cur.crossMin});
+    }else{
+      h+=`<div class="qbody">극댓값을 지나는 수평선이 곡선과 다시 만나는 점을 구하세요. 구할 수 없다면 그 이유를 판단하세요.</div>
+      <div class="fields"><label class="chk"><input type="checkbox" data-k="na3">극값이 없어 해당 없음</label></div>`;
+      items.push({k:"na3",v:1,bool:true});
+    }
+    h+=`</div>`;
+  }
+  if(on("t4")){
+    h+=`<div class="q"><div class="qt">유형 4 — 1 : √3</div>`;
+    if(cur.hasExt){
+      h+=`<div class="qbody">변곡점을 지나는 수평선이 곡선과 만나는 세 점 중 <span class="math"><i>x</i></span> 좌표가 가장 큰 점을 <span class="math"><i>x</i> = <i>p</i> + <i>q</i>√3</span> 꼴로 나타내세요.</div>
+      <div class="fields">${box("<span class='math'><i>p</i></span> =","p4")}${box("<span class='math'><i>q</i></span> =","q4")}</div>`;
+      items.push({k:"p4",v:cur.m},{k:"q4",v:cur.d});
+    }else{
+      h+=`<div class="qbody">변곡점을 지나는 수평선과 곡선의 교점 개수를 구하세요.</div>
+      <div class="fields">${box("교점 개수 =","c4")}</div>`;
+      items.push({k:"c4",v:1});
+    }
+    h+=`</div>`;
+  }
+  if(!items.length) h=`<div class="q"><div class="qbody">문항 유형을 하나 이상 선택하세요.</div></div>`;
+  $("qs").innerHTML=h;
+  $("gradeBtn").disabled=!items.length;
+  $("nextBtn").disabled=true;
+  $("graphBox").innerHTML=`<div class="veil">채점하면 개형이 공개됩니다.<br>먼저 종이에 그려보세요.</div>`;
+  $("ovBox").style.display="none";
+  $("tableBox").innerHTML="";
+  const first=$("qs").querySelector("input");
+  if(first) first.focus();
+}
+
+/* ---------- 채점 ---------- */
+function grade(){
+  if(graded||!items.length) return;
+  graded=true;
+  let ok=0;
+  for(const it of items){
+    const el=$("qs").querySelector('[data-k="'+it.k+'"]');
+    if(!el) continue;
+    const good = it.bool ? (el.checked?1:0)===it.v : Number(el.value)===it.v && el.value.trim()!=="";
+    if(it.bool){ el.parentElement.style.color = good?"var(--ok)":"var(--mark)"; }
+    else el.classList.add(good?"good":"bad");
+    if(good) ok++;
+  }
+  rec.total+=items.length; rec.correct+=ok;
+  if(ok===items.length){ rec.streak++; rec.bank=rec.bank.filter(x=>x!==cur.id); }
+  else { rec.streak=0; if(!rec.bank.includes(cur.id)) rec.bank.push(cur.id); }
+  save(); paintStats();
+
+  const v=document.createElement("div");
+  v.className="verdict "+(ok===items.length?"ok":"no");
+  v.textContent = ok===items.length ? "전부 정답" : ok+" / "+items.length+" 정답";
+  $("qs").appendChild(v);
+  const w=document.createElement("div");
+  w.className="why";
+  w.innerHTML=explain();
+  $("qs").appendChild(w);
+
+  $("graphBox").innerHTML=svgFor(cur);
+  $("ovBox").style.display="flex";
+  $("tableBox").innerHTML=tableFor(cur);
+  $("nextBtn").disabled=false;
+  $("nextBtn").focus();
+}
+function explain(){
+  const p=cur, a=p.a, m=p.m;
+  let s=`정답 &nbsp;<span class="math">`;
+  if(p.hasExt){
+    s+=`극대 (${sg(p.maxX)}, ${sg(p.maxY)}) &nbsp; 극소 (${sg(p.minX)}, ${sg(p.minY)}) &nbsp; 변곡점 (${sg(m)}, ${sg(p.n)})`;
+    s+=`</span><br>표준형 <span class="math"><i>f</i>(<i>x</i>) = ${sg(a)}(<i>x</i> ${m<0?"+":"&minus;"} ${Math.abs(m)})<sup>3</sup> ${(-3*a*p.d*p.d)<0?"&minus;":"+"} ${Math.abs(3*a*p.d*p.d)}(<i>x</i> ${m<0?"+":"&minus;"} ${Math.abs(m)}) ${p.n<0?"&minus;":"+"} ${Math.abs(p.n)}</span>`;
+    s+=`<br>변곡점 <span class="math"><i>x</i>=${sg(m)}</span> 기준 반간격 <span class="math"><i>d</i>=${p.d}</span> → 극점 <span class="math">±${p.d}</span>, 변곡선 교점 <span class="math">±√3·${p.d}</span>, 극값선 교점 <span class="math">±${2*p.d}</span>`;
+    s+=`<br>정수 <span class="math"><i>k</i></span> 개수 = 극댓값 &minus; 극솟값 &minus; 1 = ${p.vTop} &minus; (${sg(p.vBot)}) &minus; 1 = ${p.intCount}`;
+  }else{
+    s+=`극값 없음 &nbsp; 변곡점 (${sg(m)}, ${sg(p.n)})`;
+    s+=`</span><br><span class="math"><i>f</i>'(<i>x</i>) = ${sg(3*a)}[(<i>x</i> ${m<0?"+":"&minus;"} ${Math.abs(m)})<sup>2</sup> ${p.k<0?"&minus;":"+"} ${Math.abs(p.k)}]</span> 의 부호가 일정 → 단조${a>0?"증가":"감소"}이므로 모든 수평선과 <b>한 점</b>에서만 만납니다.`;
+  }
+  return s;
+}
+
+/* ---------- 그래프 ---------- */
+function svgFor(p){
+  const W=560,H=470,mL=42,mR=22,mT=46,mB=52;
+  const half = p.hasExt ? Math.max(2.9*p.d,2.4) : 2.6;
+  const x0=p.m-half, x1=p.m+half;
+  const N=260, ys=[];
+  for(let i=0;i<=N;i++) ys.push(p.f(x0+(x1-x0)*i/N));
+  let yMin=Math.min(...ys), yMax=Math.max(...ys);
+  const pad=(yMax-yMin)*0.10||1; yMin-=pad; yMax+=pad;
+  const px=x=>mL+(x-x0)/(x1-x0)*(W-mL-mR);
+  const py=y=>mT+(yMax-y)/(yMax-yMin)*(H-mT-mB);
+  const inY=y=>y>=yMin&&y<=yMax;
+
+  let g="";
+  // grid
+  for(let x=Math.ceil(x0);x<=Math.floor(x1);x++)
+    g+=`<line x1="${px(x)}" y1="${mT}" x2="${px(x)}" y2="${H-mB}" stroke="var(--grid)" stroke-width=".5"/>`;
+  const steps=[1,2,5,10,20,25,50,100];
+  const step=steps.find(s=>(yMax-yMin)/s<=9)||200;
+  for(let y=Math.ceil(yMin/step)*step;y<=yMax;y+=step){
+    g+=`<line x1="${mL}" y1="${py(y)}" x2="${W-mR}" y2="${py(y)}" stroke="var(--grid)" stroke-width=".5"/>`;
+    g+=`<text x="${mL-7}" y="${py(y)+4}" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="Cambria,serif">${y}</text>`;
+  }
+  // axes
+  if(inY(0)) g+=`<line x1="${mL}" y1="${py(0)}" x2="${W-mR}" y2="${py(0)}" stroke="var(--ink)" stroke-width="1.2"/>`;
+  if(x0<0&&x1>0) g+=`<line x1="${px(0)}" y1="${mT}" x2="${px(0)}" y2="${H-mB}" stroke="var(--ink)" stroke-width="1.2"/>`;
+  for(let x=Math.ceil(x0);x<=Math.floor(x1);x++) if(x!==0)
+    g+=`<text x="${px(x)}" y="${H-mB+16}" text-anchor="middle" font-size="11" fill="var(--ink-3)" font-family="Cambria,serif">${x}</text>`;
+  g+=`<rect x="${mL}" y="${mT}" width="${W-mL-mR}" height="${H-mT-mB}" fill="none" stroke="var(--grid-strong)" stroke-width=".5"/>`;
+
+  // overlays (behind curve)
+  let ov="";
+  if(p.hasExt&&$("ov1").checked){
+    const rulerY=H-22;
+    for(const x of [p.m-2*p.d,p.m-p.d,p.m,p.m+p.d,p.m+2*p.d])
+      ov+=`<line x1="${px(x)}" y1="${mT}" x2="${px(x)}" y2="${rulerY}" stroke="var(--hl-2)" stroke-width=".7" stroke-dasharray="3 3" opacity=".75"/>`;
+    ov+=`<line x1="${px(p.maxX)}" y1="${py(p.maxY)}" x2="${px(p.crossMax)}" y2="${py(p.maxY)}" stroke="var(--hl-2)" stroke-width="1" stroke-dasharray="5 4"/>`;
+    ov+=`<line x1="${px(p.minX)}" y1="${py(p.minY)}" x2="${px(p.crossMin)}" y2="${py(p.minY)}" stroke="var(--hl-2)" stroke-width="1" stroke-dasharray="5 4"/>`;
+    ov+=`<line x1="${px(p.m-2*p.d)}" y1="${rulerY}" x2="${px(p.m+2*p.d)}" y2="${rulerY}" stroke="var(--hl-2)" stroke-width="1.2"/>`;
+    for(let j=-2;j<=2;j++) ov+=`<line x1="${px(p.m+j*p.d)}" y1="${rulerY-5}" x2="${px(p.m+j*p.d)}" y2="${rulerY+5}" stroke="var(--hl-2)" stroke-width="1.2"/>`;
+    for(let j=-2;j<2;j++) ov+=`<text x="${px(p.m+(j+0.5)*p.d)}" y="${rulerY-9}" text-anchor="middle" font-size="12" fill="var(--hl-2)" font-family="Cambria,serif">1</text>`;
+    ov+=`<circle cx="${px(p.crossMax)}" cy="${py(p.maxY)}" r="4" fill="none" stroke="var(--hl-2)" stroke-width="1.6"/>`;
+    ov+=`<circle cx="${px(p.crossMin)}" cy="${py(p.minY)}" r="4" fill="none" stroke="var(--hl-2)" stroke-width="1.6"/>`;
+  }
+  if(p.hasExt&&$("ov2").checked){
+    const barY=mT-24;
+    ov+=`<line x1="${px(p.m-S3*p.d)}" y1="${py(p.n)}" x2="${px(p.m+S3*p.d)}" y2="${py(p.n)}" stroke="var(--mark)" stroke-width="1" stroke-dasharray="5 4"/>`;
+    for(const x of [p.m-S3*p.d,p.m+S3*p.d]){
+      ov+=`<circle cx="${px(x)}" cy="${py(p.n)}" r="3.6" fill="var(--mark)"/>`;
+      ov+=`<line x1="${px(x)}" y1="${barY}" x2="${px(x)}" y2="${py(p.n)}" stroke="var(--mark)" stroke-width=".6" stroke-dasharray="3 3" opacity=".6"/>`;
+    }
+    ov+=`<line x1="${px(p.m)}" y1="${barY}" x2="${px(p.m)}" y2="${py(p.n)}" stroke="var(--mark)" stroke-width=".6" stroke-dasharray="3 3" opacity=".6"/>`;
+    ov+=`<line x1="${px(p.m)}" y1="${barY}" x2="${px(p.m+S3*p.d)}" y2="${barY}" stroke="var(--mark)" stroke-width="1.1"/>`;
+    ov+=`<line x1="${px(p.m+p.d)}" y1="${barY-4}" x2="${px(p.m+p.d)}" y2="${barY+4}" stroke="var(--mark)" stroke-width="1.1"/>`;
+    ov+=`<text x="${px(p.m+p.d/2)}" y="${barY-8}" text-anchor="middle" font-size="12" fill="var(--mark)" font-family="Cambria,serif">1</text>`;
+    ov+=`<text x="${px(p.m+(1+S3)*p.d/2)}" y="${barY-8}" text-anchor="middle" font-size="12" fill="var(--mark)" font-family="Cambria,serif">√3</text>`;
+  }
+
+  // curve
+  let d="";
+  for(let i=0;i<=N;i++){ const x=x0+(x1-x0)*i/N; d+=(i?"L":"M")+px(x).toFixed(1)+" "+py(p.f(x)).toFixed(1)+" "; }
+  let cv=`<path d="${d}" fill="none" stroke="var(--curve)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  if(p.hasExt){
+    cv+=`<circle cx="${px(p.maxX)}" cy="${py(p.maxY)}" r="4.5" fill="var(--curve)"/>`;
+    cv+=`<circle cx="${px(p.minX)}" cy="${py(p.minY)}" r="4.5" fill="var(--curve)"/>`;
+  }
+  cv+=`<circle cx="${px(p.m)}" cy="${py(p.n)}" r="4.5" fill="none" stroke="var(--curve)" stroke-width="2"/>`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="함수의 개형"><g>${g}</g><g>${ov}</g><g>${cv}</g></svg>`;
+}
+
+function tableFor(p){
+  if(!p.hasExt){
+    return `<table class="mono"><tr><th><i>x</i></th><td colspan="1">(&minus;∞, ∞)</td></tr>
+    <tr><th><i>f</i>&prime;(<i>x</i>)</th><td>${p.a>0?"+":"&minus;"}</td></tr>
+    <tr><th><i>f</i>(<i>x</i>)</th><td>${p.a>0?"↗":"↘"}</td></tr></table>
+    <div class="hint">${p.k===0?"<span class='math'><i>f</i>&prime;</span> 이 한 점에서만 0 (중근) — 그 점에서 접선이 수평이지만 극값은 아닙니다.":"<span class='math'><i>f</i>&prime;</span> 의 판별식이 음수 — 부호 변화가 없습니다."}</div>`;
+  }
+  const L=p.m-p.d, R=p.m+p.d, up=p.a>0;
+  return `<table class="mono">
+  <tr><th><i>x</i></th><td>⋯</td><td>${sg(L)}</td><td>⋯</td><td>${sg(R)}</td><td>⋯</td></tr>
+  <tr><th><i>f</i>&prime;(<i>x</i>)</th><td>${up?"+":"&minus;"}</td><td>0</td><td>${up?"&minus;":"+"}</td><td>0</td><td>${up?"+":"&minus;"}</td></tr>
+  <tr><th><i>f</i>(<i>x</i>)</th><td>${up?"↗":"↘"}</td><td>${up?sg(p.maxY):sg(p.minY)}</td><td>${up?"↘":"↗"}</td><td>${up?sg(p.minY):sg(p.maxY)}</td><td>${up?"↗":"↘"}</td></tr></table>
+  <div class="hint">변곡점 <span class="math"><i>x</i> = ${sg(p.m)}</span> 에서 <span class="math"><i>f</i>&Prime;</span> 의 부호가 바뀌고, 두 극점은 변곡점에 대해 점대칭입니다.</div>`;
+}
+
+/* ---------- 이벤트 ---------- */
+$("gradeBtn").onclick=grade;
+$("nextBtn").onclick=nextProblem;
+$("newBtn").onclick=nextProblem;
+$("resetBtn").onclick=()=>{
+  rec={correct:0,total:0,streak:0,bank:[]}; save(); paintStats();
+};
+for(const id of ["t1","t2","t3","t4"]) $(id).onchange=()=>{ if(graded) nextProblem(); else render(); };
+for(const id of ["noext","wrongonly"]) $(id).onchange=nextProblem;
+for(const id of ["ov1","ov2"]) $(id).onchange=()=>{ if(graded) $("graphBox").innerHTML=svgFor(cur); };
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter") return;
+  if(e.target.tagName==="BUTTON") return;
+  e.preventDefault();
+  graded?nextProblem():grade();
+});
+nextProblem();
+</script>
+</body>
+</html>
