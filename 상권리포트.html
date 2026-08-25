@@ -400,8 +400,15 @@ function render(){
 
   rows.sort((a,b)=>{
     if(a.kind!==b.kind) return a.kind==='추천'?-1:1;
-    if(sortKey==='gap') return (b.gap??0)-(a.gap??0);
-    return (a.z??99)-(b.z??99);
+    
+    // 추천 상권일 경우 기존처럼 잔차/규모순 정렬
+    if(a.kind === '추천') {
+      if(sortKey==='gap') return (b.gap??0)-(a.gap??0);
+      return (a.z??99)-(b.z??99);
+    }
+    
+    // 회피 상권일 경우: 폐업률 오름차순 (폐업률 높은 게 아래로 감)
+    return (a.closeRate??0) - (b.closeRate??0);
   });
 
   overlays.forEach(o=>o.setMap(null)); overlays=[];
