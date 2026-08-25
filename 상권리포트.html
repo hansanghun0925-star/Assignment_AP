@@ -476,7 +476,7 @@ function render(){
       <span class="rno mono">${i+1}</span>
       <span class="rname">${d.name}<span class="rsub"> · ${d.biz}</span></span>
       <span class="rbadge">${d.gu}</span>
-      <span class="rval ${isR?'':'rd'} mono">${isR?`하위 ${pctS(d.pct)}`:`폐업 ${d.closeRate}`}</span>
+      <span class="rval ${isR?'':'rd'} mono">${isR?`하위 ${pctS(d.pct)}`:`폐업률 ${d.closeRate}%`}</span>
     </div>`;
   }).join('');
 }
@@ -581,7 +581,7 @@ function popHtml(d){
     `경쟁 밀도와 폐업률 모두 업종 중앙값 이하 — 포화도·위험도 양쪽에서 여유`,
   ] : [
     `점포 밀도 <b>${d.density}</b>개/km² — 동일 업종 상위 25%로 <b>과밀</b>`,
-    `폐업률 <b>${d.closeRate}</b> — 동일 업종 상위 25%로 <b>위험</b>`,
+    `폐업률 <b>${d.closeRate}%</b> — 동일 업종 상위 25%로 <b>위험</b>`,
     `60대 고객 기반은 있으나(비중 ${(d.share60*100).toFixed(1)}%) 신규 진입 여지가 낮다`,
   ];
 
@@ -601,7 +601,7 @@ function popHtml(d){
     <div class="pk"><div class="pkv mono" style="color:var(--yl)">${won(d.gap)}</div><div class="pkl">미충족 규모 (월)</div></div>
     <div class="pk"><div class="pkv mono">${d.z}</div><div class="pkl">잔차 z-score</div></div>` : `
     <div class="pk"><div class="pkv mono" style="color:var(--rd)">${d.density}</div><div class="pkl">점포 밀도 /km²</div></div>
-    <div class="pk"><div class="pkv mono" style="color:var(--rd)">${d.closeRate}</div><div class="pkl">폐업률</div></div>
+   <div class="pk"><div class="pkv mono" style="color:var(--rd)">${d.closeRate}%</div><div class="pkl">폐업률</div></div>
     <div class="pk"><div class="pkv mono">${(d.share60*100).toFixed(1)}%</div><div class="pkl">60대 매출 비중</div></div>
     <div class="pk"><div class="pkv mono">${d.stores}</div><div class="pkl">현재 점포 수</div></div>`;
 
