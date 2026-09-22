@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>22번 두 문항 · 단계별 판단 훈련</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F8FB; --panel:#FFFFFF; --grid:#E2E8F1; --rule:#CFD8E6;
+  --ink:#121A24; --ink-2:#4B5768; --ink-3:#7A869A;
+  --blue:#24518C; --teal:#0C7F73; --red:#A8322B; --amber:#8A6210;
+  --ok-bg:#E8F3EC; --no-bg:#FBECEA;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F141B; --panel:#151C25; --grid:#222C38; --rule:#2C3845;
+    --ink:#E7ECF3; --ink-2:#A9B4C4; --ink-3:#7C8798;
+    --blue:#7FAEEA; --teal:#4FC6B4; --red:#EE8878; --amber:#D8B15E;
+    --ok-bg:#15291F; --no-bg:#2C1A18;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F141B; --panel:#151C25; --grid:#222C38; --rule:#2C3845;
+  --ink:#E7ECF3; --ink-2:#A9B4C4; --ink-3:#7C8798;
+  --blue:#7FAEEA; --teal:#4FC6B4; --red:#EE8878; --amber:#D8B15E;
+  --ok-bg:#15291F; --no-bg:#2C1A18;
+}
+*{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px)}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  font-size:16px; line-height:1.72; letter-spacing:-0.005em;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px; background-position:-1px -1px;
+}
+.m{font-family:"Noto Serif",Georgia,"Times New Roman",serif; letter-spacing:0}
+.m i{font-style:italic}
+sup{font-size:.72em}
+.wrap{max-width:960px;margin:0 auto;padding:0 18px 96px}
+
+/* 수식 조판 */
+.eq{display:block;text-align:center;margin:18px 0;font-size:1.05em}
+.lim{display:inline-flex;align-items:center;gap:.4em;vertical-align:middle}
+.op{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05}
+.op .sub{font-size:.62em;margin-top:.15em;white-space:nowrap}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.35}
+.frac>span{padding:0 .5em;white-space:nowrap}
+.frac .den{border-top:1px solid currentColor;margin-top:.12em;padding-top:.06em}
+.cases-eq{display:inline-flex;align-items:stretch;gap:.5em;vertical-align:middle}
+.brace{font-size:2.9em;line-height:.9;font-weight:300}
+.rows{display:grid;gap:.25em;text-align:left;align-content:center}
+
+header{
+  position:sticky;top:0;z-index:20;padding-top:env(safe-area-inset-top,0px);
+  background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);
+}
+.hbar{max-width:960px;margin:0 auto;padding:10px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.brand{font-family:"Noto Serif",Georgia,serif;font-weight:600;font-size:15px;margin-right:auto}
+.brand span{color:var(--ink-3);font-weight:400}
+.tabs{display:flex;gap:6px}
+.tab{font:inherit;font-size:14px;padding:7px 14px;border-radius:999px;cursor:pointer;border:1px solid var(--rule);background:transparent;color:var(--ink-2)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tab:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+.hero{padding:34px 0 10px}
+.hero h1{font-family:"Noto Serif",Georgia,serif;font-weight:600;font-size:clamp(26px,5vw,40px);line-height:1.25;margin:0 0 10px;letter-spacing:-0.02em}
+.hero p{margin:0;max-width:60ch;color:var(--ink-2)}
+
+.problem{background:var(--panel);border:1px solid var(--rule);border-radius:4px;padding:22px 22px 18px;margin:22px 0 10px}
+.problem .no{font-family:"Noto Serif",Georgia,serif;font-weight:600;font-size:19px;margin-right:8px}
+.problem .src{color:var(--ink-3);font-size:13px}
+.stmt{margin:14px 0 0}
+.cond{border:1px solid var(--rule);border-radius:3px;padding:12px 16px;margin-top:16px;background:var(--paper)}
+.cond p{margin:4px 0}
+.cond b{font-weight:600;color:var(--blue)}
+
+.steps{margin-top:40px}
+.step{position:relative;padding-left:46px;padding-bottom:34px;border-left:1px solid var(--rule);margin-left:13px}
+.step:last-child{border-left-color:transparent}
+.dot{position:absolute;left:-13px;top:2px;width:26px;height:26px;border-radius:50%;background:var(--panel);border:1px solid var(--rule);color:var(--ink-3);display:grid;place-items:center;font-size:13px;font-family:"Noto Serif",Georgia,serif}
+.step.done .dot{background:var(--blue);border-color:var(--blue);color:#fff}
+.step h3{font-size:19px;margin:0 0 4px;font-weight:600;letter-spacing:-0.01em}
+.step .lead{margin:0 0 16px;color:var(--ink-2)}
+
+.quiz{background:var(--panel);border:1px solid var(--rule);border-radius:4px;padding:16px 18px}
+.quiz .q{margin:0 0 12px;font-weight:600}
+.opts{display:grid;gap:8px}
+.opt{font:inherit;text-align:left;padding:11px 14px;border-radius:3px;cursor:pointer;border:1px solid var(--rule);background:var(--paper);color:var(--ink);line-height:1.55;transition:border-color .12s ease,background .12s ease}
+.opt:hover:not(:disabled){border-color:var(--blue)}
+.opt:disabled{cursor:default}
+.opt.pick-ok{background:var(--ok-bg);border-color:var(--teal)}
+.opt.pick-no{background:var(--no-bg);border-color:var(--red)}
+.opt .mark{font-family:"Noto Serif",Georgia,serif;color:var(--ink-3);margin-right:8px}
+.fb{margin:12px 0 0;padding:11px 14px;border-radius:3px;font-size:15px;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--ok-bg);border-left:3px solid var(--teal)}
+.fb.no{background:var(--no-bg);border-left:3px solid var(--red)}
+.skip{margin-top:10px;background:none;border:0;color:var(--ink-3);font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;padding:0}
+
+.reveal{display:none;margin-top:18px}
+.reveal.on{display:block}
+
+.crit{border:1px solid var(--blue);border-radius:3px;background:var(--panel);padding:14px 16px;margin:18px 0}
+.crit h4{margin:0 0 8px;font-size:14px;font-weight:600;color:var(--blue)}
+.crit p{margin:6px 0}
+.crit ul{margin:6px 0 0;padding-left:20px}
+.crit li{margin:4px 0}
+
+figure{margin:18px 0;background:var(--panel);border:1px solid var(--rule);border-radius:4px;padding:10px 10px 4px}
+figure svg{display:block;width:100%;height:auto}
+figcaption{font-size:13px;color:var(--ink-3);padding:2px 6px 8px;line-height:1.6}
+
+.cases{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.case{font:inherit;font-size:13.5px;padding:7px 12px;border-radius:3px;cursor:pointer;border:1px solid var(--rule);background:var(--panel);color:var(--ink-2)}
+.case[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.verdict{display:inline-block;font-size:12.5px;padding:2px 9px;border-radius:999px;margin-left:8px;vertical-align:2px}
+.verdict.no{background:var(--no-bg);color:var(--red)}
+.verdict.ok{background:var(--ok-bg);color:var(--teal)}
+
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:14px 0}
+th,td{border:1px solid var(--rule);padding:8px 10px;text-align:left}
+th{background:var(--panel);font-weight:600}
+.scroll{overflow-x:auto}
+
+.ctrl{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:4px 0 12px}
+.ctrl label{font-size:14px;display:flex;align-items:center;gap:9px}
+.ctrl input[type=range]{width:160px;accent-color:var(--blue)}
+.val{font-family:"Noto Serif",Georgia,serif;min-width:2.2em;display:inline-block}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.badge{font-size:13px;padding:4px 11px;border-radius:3px;border:1px solid var(--rule)}
+.badge.y{background:var(--ok-bg);border-color:var(--teal);color:var(--teal)}
+.badge.n{background:var(--no-bg);border-color:var(--red);color:var(--red)}
+.gridwrap{overflow-x:auto;padding-bottom:6px}
+table.pq{border-collapse:collapse;font-size:11px;width:auto;min-width:100%}
+table.pq th{padding:2px 4px;font-size:11px;font-weight:400;color:var(--ink-3);border:0;background:none;text-align:center}
+table.pq td{border:1px solid var(--rule);padding:0;width:20px;height:20px}
+table.pq td button{width:100%;height:100%;border:0;background:none;cursor:pointer;display:block}
+td.c-both{background:var(--teal)}
+td.c-a{background:color-mix(in srgb,var(--blue) 26%,transparent)}
+td.c-b{background:color-mix(in srgb,var(--amber) 26%,transparent)}
+td.sel{outline:2px solid var(--ink);outline-offset:-2px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin-top:8px}
+.sw{display:inline-block;width:12px;height:12px;border:1px solid var(--rule);vertical-align:-2px;margin-right:5px}
+
+.answer{background:var(--panel);border:1px solid var(--ink);border-radius:4px;padding:20px 22px;margin:8px 0 28px}
+.answer .lab{font-size:13px;color:var(--ink-3);margin:0}
+.answer .big{font-family:"Noto Serif",Georgia,serif;font-size:clamp(26px,5.6vw,40px);margin:2px 0 0;font-weight:600}
+details{border-top:1px solid var(--rule);margin-top:14px;padding-top:10px}
+summary{cursor:pointer;font-size:14.5px;color:var(--blue)}
+.checklist{padding-left:20px;margin:10px 0 0}
+.checklist li{margin:6px 0}
+.tail{color:var(--ink-3);font-size:13.5px;border-top:1px solid var(--rule);padding-top:16px;margin-top:10px}
+[hidden]{display:none !important}
+@media (prefers-reduced-motion: no-preference){
+  .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .9s ease forwards}
+  .draw.d2{animation-delay:.5s}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .fadein{opacity:0;animation:fade .5s ease .4s forwards}
+  @keyframes fade{to{opacity:1}}
+}
+@media (max-width:560px){
+  .step{padding-left:34px}
+  .problem{padding:18px 16px}
+  .eq{font-size:.96em}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbar">
+    <div class="brand">22번 판단 훈련 <span>· 수학Ⅱ</span></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-panel="A">예시문항</button>
+      <button class="tab" role="tab" aria-selected="false" data-panel="B">9월 모평</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ======================= 문항 A ======================= -->
+<main id="A">
+  <section class="hero">
+    <h1>극한값을 먼저 계산해 <span class="m"><i>g</i></span>를 다시 쓴다</h1>
+    <p>주어진 극한은 <span class="m"><i>f</i>(<i>x</i>)</span>의 부호에 따라 값이 정해집니다. 부호별로 <span class="m"><i>g</i>(<i>x</i>)</span>를 다시 쓰고 나면, 남는 것은 <span class="m"><i>f</i></span>의 근이 어떤 모양이냐는 질문뿐입니다. 단계마다 판단할 지점이 하나씩 있습니다.</p>
+  </section>
+
+  <div class="problem">
+    <span class="no">22.</span><span class="src">2022학년도 수능 예시문항 · 4점</span>
+    <p class="stmt">최고차항의 계수가 <span class="m">1</span>인 삼차함수 <span class="m"><i>f</i>(<i>x</i>)</span>에 대하여 함수</p>
+    <div class="eq m">
+      <span class="lim">
+        <span><i>g</i>(<i>x</i>) = <i>f</i>(<i>x</i>−3) ×</span>
+        <span class="op">lim<span class="sub"><i>h</i>→0+</span></span>
+        <span class="frac">
+          <span class="num">|<i>f</i>(<i>x</i>+<i>h</i>)| − |<i>f</i>(<i>x</i>−<i>h</i>)|</span>
+          <span class="den"><i>h</i></span>
+        </span>
+      </span>
+    </div>
+    <p class="stmt">가 다음 조건을 만족시킬 때, <span class="m"><i>f</i>(5)</span>의 값을 구하시오.</p>
+    <div class="cond">
+      <p><b>(가)</b> 함수 <span class="m"><i>g</i>(<i>x</i>)</span>는 실수 전체의 집합에서 연속이다.</p>
+      <p><b>(나)</b> 방정식 <span class="m"><i>g</i>(<i>x</i>) = 0</span>은 서로 다른 네 실근 <span class="m">α<sub>1</sub>, α<sub>2</sub>, α<sub>3</sub>, α<sub>4</sub></span>를 갖고 <span class="m">α<sub>1</sub>+α<sub>2</sub>+α<sub>3</sub>+α<sub>4</sub> = 7</span>이다.</p>
+    </div>
+  </div>
+
+  <div class="steps">
+
+    <!-- A1 -->
+    <section class="step" id="a1">
+      <div class="dot">1</div>
+      <h3><span class="m"><i>f</i>(<i>x</i>) ≠ 0</span>인 곳에서 절댓값 벗기기</h3>
+      <p class="lead"><span class="m"><i>f</i></span>는 연속이므로 <span class="m"><i>f</i>(<i>x</i>) &gt; 0</span>이면 그 근방에서도 계속 양수입니다. <span class="m"><i>h</i></span>가 충분히 작으면 절댓값이 그냥 벗겨집니다.</p>
+      <div class="quiz" data-answer="1">
+        <p class="q"><span class="m"><i>f</i>(<i>x</i>) &gt; 0</span>인 <span class="m"><i>x</i></span>에서 <span class="m"><i>g</i>(<i>x</i>)</span>는?</p>
+        <div class="opts">
+          <button class="opt"><span class="mark">①</span><span class="m"><i>f</i>(<i>x</i>−3)<i>f</i>′(<i>x</i>)</span></button>
+          <button class="opt"><span class="mark">②</span><span class="m">2<i>f</i>(<i>x</i>−3)<i>f</i>′(<i>x</i>)</span></button>
+          <button class="opt"><span class="mark">③</span><span class="m">−2<i>f</i>(<i>x</i>−3)<i>f</i>′(<i>x</i>)</span></button>
+          <button class="opt"><span class="mark">④</span><span class="m"><i>f</i>(<i>x</i>−3)|<i>f</i>′(<i>x</i>)|</span></button>
+        </div>
+        <div class="fb"></div>
+        <button class="skip">답 없이 해설 열기</button>
+      </div>
+      <div class="reveal">
+        <p>분자에 <span class="m"><i>f</i>(<i>x</i>)</span>를 더하고 빼서 미분계수의 정의 두 개로 나눕니다.</p>
+        <div class="eq m">
+          <span class="lim">
+            <span class="op">lim<span class="sub"><i>h</i>→0+</span></span>
+            <span class="frac"><span class="num"><i>f</i>(<i>x</i>+<i>h</i>) − <i>f</i>(<i>x</i>)</span><span class="den"><i>h</i></span></span>
+            <span>+</span>
+            <span class="op">lim<span class="sub"><i>h</i>→0+</span></span>
+            <span class="frac"><span class="num"><i>f</i>(<i>x</i>) − <i>f</i>(<i>x</i>−<i>h</i>)</span><span class="den"><i>h</i></span></span>
+            <span>= <i>f</i>′(<i>x</i>) + <i>f</i>′(<i>x</i>) = 2<i>f</i>′(<i>x</i>)</span>
+          </span>
+        </div>
+        <p><span class="m"><i>f</i>(<i>x</i>) &lt; 0</span>이면 근방에서 <span class="m">|<i>f</i>| = −<i>f</i></span>이므로 부호만 뒤집혀 <span class="m">−2<i>f</i>′(<i>x</i>)</span>가 됩니다.</p>
+        <figure><div id="figA1"></div><figcaption>점선이 <span class="m"><i>y</i>=<i>f</i>(<i>x</i>)</span>, 실선이 <span class="m"><i>y</i>=|<i>f</i>(<i>x</i>)|</span>. 근이 아닌 곳에서는 두 그래프가 부호만 다를 뿐 매끈하게 붙어 있습니다. 문제가 생기는 곳은 빨간 점, 즉 <span class="m"><i>f</i></span>의 근뿐입니다.</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- A2 -->
+    <section class="step" id="a2">
+      <div class="dot">2</div>
+      <h3><span class="m"><i>f</i>(<i>a</i>) = 0</span>인 곳에서의 극한값</h3>
+      <p class="lead">여기서는 절댓값을 벗길 수 없습니다. 대신 <span class="m"><i>f</i>(<i>a</i>) = 0</span>이라는 사실을 분자에 그대로 써먹습니다.</p>
+      <div class="quiz" data-answer="2">
+        <p class="q"><span class="m"><i>f</i>(<i>a</i>) = 0</span>일 때 그 극한값은?</p>
+        <div class="opts">
+          <button class="opt"><span class="mark">①</span><span class="m">2<i>f</i>′(<i>a</i>)</span></button>
+          <button class="opt"><span class="mark">②</span><span class="m">2|<i>f</i>′(<i>a</i>)|</span></button>
+          <button class="opt"><span class="mark">③</span><span class="m">0</span></button>
+          <button class="opt"><span class="mark">④</span>존재하지 않는다</button>
+        </div>
+        <div class="fb"></div>
+        <button class="skip">답 없이 해설 열기</button>
+      </div>
+      <div class="reveal">
+        <p><span class="m"><i>f</i>(<i>a</i>) = 0</span>이므로 <span class="m">|<i>f</i>(<i>a</i>+<i>h</i>)| = |<i>f</i>(<i>a</i>+<i>h</i>) − <i>f</i>(<i>a</i>)|</span>. 따라서 <span class="m"><i>h</i> &gt; 0</span>일 때</p>
+        <div class="eq m">
+          <span class="lim">
+            <span class="op">lim<span class="sub"><i>h</i>→0+</span></span>
+            <span class="frac"><span class="num">|<i>f</i>(<i>a</i>+<i>h</i>)|</span><span class="den"><i>h</i></span></span>
+            <span>=</span>
+            <span class="op">lim<span class="sub"><i>h</i>→0+</span></span>
+            <span class="frac"><span class="num">| <i>f</i>(<i>a</i>+<i>h</i>) − <i>f</i>(<i>a</i>) |</span><span class="den"><i>h</i></span></span>
+            <span>= |<i>f</i>′(<i>a</i>)|</span>
+          </span>
+        </div>
+        <p>같은 이유로 <span class="m">|<i>f</i>(<i>a</i>−<i>h</i>)| / <i>h</i></span>의 극한도 <span class="m">|<i>f</i>′(<i>a</i>)|</span>입니다. 두 값이 같으니 차는 <span class="m">0</span>. 근의 중복도와 상관없이 <b><span class="m"><i>f</i></span>의 모든 근에서 극한값은 <span class="m">0</span></b>이고, 따라서 <span class="m"><i>g</i>(<i>a</i>) = 0</span>입니다.</p>
+        <div class="crit">
+          <h4>여기까지의 결론 — <span class="m"><i>g</i></span>를 다시 쓴 꼴</h4>
+          <div class="eq m" style="margin:10px 0">
+            <span class="cases-eq">
+              <span><i>g</i>(<i>x</i>) =</span>
+              <span class="brace">{</span>
+              <span class="rows">
+                <span>2<i>f</i>(<i>x</i>−3)<i>f</i>′(<i>x</i>) &nbsp;&nbsp;(<i>f</i>(<i>x</i>) &gt; 0)</span>
+                <span>−2<i>f</i>(<i>x</i>−3)<i>f</i>′(<i>x</i>) &nbsp;(<i>f</i>(<i>x</i>) &lt; 0)</span>
+                <span>0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<i>f</i>(<i>x</i>) = 0)</span>
+              </span>
+            </span>
+          </div>
+          <p style="color:var(--ink-2)">이제 <span class="m"><i>g</i></span>는 다항식 두 개와 경계뿐입니다. 절댓값은 더 나오지 않습니다.</p>
+        </div>
+        <figure><div id="figA2"></div><figcaption><span class="m"><i>f</i></span>의 근 근처를 확대한 모습. <span class="m">|<i>f</i>(<i>a</i>+<i>h</i>)|</span>와 <span class="m">|<i>f</i>(<i>a</i>−<i>h</i>)|</span>가 같은 높이로 올라가므로 분자가 <span class="m">0</span>에 가까워집니다.</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- A3 -->
+    <section class="step" id="a3">
+      <div class="dot">3</div>
+      <h3>조건 (가)가 강제하는 것</h3>
+      <p class="lead">경계, 즉 <span class="m"><i>f</i>(<i>a</i>) = 0</span>인 점에서만 연속을 따지면 됩니다. 나머지 구간에서는 다항식이라 이미 연속입니다.</p>
+      <div class="quiz" data-answer="1">
+        <p class="q"><span class="m"><i>f</i>(<i>a</i>)=0</span>인 점 중 <span class="m"><i>g</i></span>가 불연속일 수 있는 것은?</p>
+        <div class="opts">
+          <button class="opt"><span class="mark">①</span>모든 근</button>
+          <button class="opt"><span class="mark">②</span>좌우에서 <span class="m"><i>f</i></span>의 부호가 바뀌고 <span class="m"><i>f</i>′(<i>a</i>) ≠ 0</span>인 근</button>
+          <button class="opt"><span class="mark">③</span>중근</button>
+          <button class="opt"><span class="mark">④</span><span class="m"><i>f</i>(<i>x</i>−3)</span>의 근</button>
+        </div>
+        <div class="fb"></div>
+        <button class="skip">답 없이 해설 열기</button>
+      </div>
+      <div class="reveal">
+        <p>근 <span class="m"><i>a</i></span>의 좌우에서 <span class="m"><i>f</i></span>의 부호가 바뀌면 한쪽 극한은 <span class="m">2<i>f</i>(<i>a</i>−3)<i>f</i>′(<i>a</i>)</span>, 다른 쪽은 <span class="m">−2<i>f</i>(<i>a</i>−3)<i>f</i>′(<i>a</i>)</span>입니다. 함숫값은 <span class="m">0</span>이므로</p>
+        <p class="eq m"><i>f</i>(<i>a</i>−3) <i>f</i>′(<i>a</i>) = 0</p>
+        <p>이어야 합니다. 부호가 바뀌는 근에서 <span class="m"><i>f</i>′(<i>a</i>) ≠ 0</span>이면 남는 길은 하나뿐입니다. 반대로 중근이면 <span class="m"><i>f</i>′(<i>a</i>) = 0</span>이라 좌우극한이 모두 <span class="m">0</span>이 되어 저절로 연속입니다. 삼중근도 <span class="m"><i>f</i>′(<i>a</i>)=0</span>이라 같습니다.</p>
+        <div class="crit">
+          <h4>(가)의 번역</h4>
+          <p><span class="m"><i>f</i></span>의 근 <span class="m"><i>a</i></span>가 <b>부호가 바뀌는 단순근</b>이면 <span class="m"><i>f</i>(<i>a</i>−3) = 0</span>, 즉 <b><span class="m"><i>a</i>−3</span>도 <span class="m"><i>f</i></span>의 근</b>이어야 한다.</p>
+          <p style="color:var(--ink-2)">근 하나가 자기보다 3 작은 근을 불러옵니다. 왼쪽으로 무한히 갈 수는 없으니 견딜 수 있는 근 구조는 얼마 없습니다.</p>
+        </div>
+        <figure><div id="figA3"></div><figcaption>조건을 어기는 예 <span class="m"><i>f</i>(<i>x</i>) = (<i>x</i>+1)(<i>x</i>−1)(<i>x</i>−3)</span>로 그린 <span class="m"><i>y</i>=<i>g</i>(<i>x</i>)</span>. 각 근에서 값은 <span class="m">0</span>인데 좌우극한이 부호만 바꿔 갈라져 뚝 끊깁니다.</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- A4 -->
+    <section class="step" id="a4">
+      <div class="dot">4</div>
+      <h3>근 구조 네 가지 거르기</h3>
+      <p class="lead">삼차함수의 실근 구조는 넷뿐입니다. 하나씩 넣어 봅니다.</p>
+      <div class="quiz" data-answer="3">
+        <p class="q">(가)와 (나)를 모두 살아남는 구조는?</p>
+        <div class="opts">
+          <button class="opt"><span class="mark">①</span>서로 다른 세 실근</button>
+          <button class="opt"><span class="mark">②</span>실근 한 개(부호가 바뀌는 근)</button>
+          <button class="opt"><span class="mark">③</span>삼중근</button>
+          <button class="opt"><span class="mark">④</span>중근 하나와 단순근 하나</button>
+        </div>
+        <div class="fb"></div>
+        <button class="skip">답 없이 해설 열기</button>
+      </div>
+      <div class="reveal">
+        <div class="cases" role="tablist" id="caseTabs">
+          <button class="case" role="tab" aria-selected="true" data-c="0">세 실근</button>
+          <button class="case" role="tab" aria-selected="false" data-c="1">실근 1개</button>
+          <button class="case" role="tab" aria-selected="false" data-c="2">삼중근</button>
+          <button class="case" role="tab" aria-selected="false" data-c="3">중근 + 단순근</button>
+        </div>
+        <figure><div id="figA4"></div><figcaption id="capA4"></figcaption></figure>
+        <div class="crit">
+          <h4>살아남은 형태</h4>
+          <p>중근을 <span class="m"><i>p</i></span>, 단순근을 <span class="m"><i>q</i></span>라 하면 단순근에만 조건이 걸립니다. <span class="m"><i>q</i>−3</span>이 근이어야 하는데 <span class="m"><i>q</i>−3 = <i>q</i></span>는 불가능하므로 <span class="m"><i>q</i>−3 = <i>p</i></span>.</p>
+          <p class="eq m" style="margin:8px 0"><i>f</i>(<i>x</i>) = (<i>x</i>−<i>p</i>)<sup>2</sup>(<i>x</i>−<i>p</i>−3)</p>
+          <p style="color:var(--ink-2)">미지수가 <span class="m"><i>p</i></span> 하나로 줄었습니다. 나머지는 (나)가 정합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- A5 -->
+    <section class="step" id="a5">
+      <div class="dot">5</div>
+      <h3>네 근을 모아 합 맞추기</h3>
+      <p class="lead">2단계에서 다시 쓴 <span class="m"><i>g</i></span>를 그대로 보고 <span class="m"><i>g</i>(<i>x</i>)=0</span>을 풉니다.</p>
+      <div class="quiz" data-answer="2">
+        <p class="q"><span class="m"><i>g</i>(<i>x</i>) = 0</span>이 되는 <span class="m"><i>x</i></span>를 모두 모으면?</p>
+        <div class="opts">
+          <button class="opt"><span class="mark">①</span><span class="m"><i>f</i>(<i>x</i>−3) = 0</span>인 <span class="m"><i>x</i></span>만</button>
+          <button class="opt"><span class="mark">②</span><span class="m"><i>f</i>(<i>x</i>) = 0</span>인 <span class="m"><i>x</i></span>만</button>
+          <button class="opt"><span class="mark">③</span><span class="m"><i>f</i>(<i>x</i>)=0</span>, <span class="m"><i>f</i>(<i>x</i>−3)=0</span>, <span class="m"><i>f</i>′(<i>x</i>)=0</span> 중 하나라도 성립하는 <span class="m"><i>x</i></span></button>
+          <button class="opt"><span class="mark">④</span><span class="m"><i>f</i>′(<i>x</i>) = 0</span>인 <span class="m"><i>x</i></span>만</button>
+        </div>
+        <div class="fb"></div>
+        <button class="skip">답 없이 해설 열기</button>
+      </div>
+      <div class="reveal">
+        <p><span class="m"><i>f</i>(<i>x</i>)=0</span>인 곳은 <span class="m"><i>g</i>(<i>x</i>)=0</span>이고, <span class="m"><i>f</i>(<i>x</i>)≠0</span>인 곳에서는 <span class="m"><i>g</i>(<i>x</i>) = ±2<i>f</i>(<i>x</i>−3)<i>f</i>′(<i>x</i>)</span>이므로 두 인수 중 하나가 <span class="m">0</span>이면 됩니다.</p>
+        <p><span class="m"><i>f</i>(<i>x</i>) = (<i>x</i>−<i>p</i>)<sup>2</sup>(<i>x</i>−<i>p</i>−3)</span>을 전개해 미분하면 <span class="m"><i>f</i>′(<i>x</i>) = 3(<i>x</i>−<i>p</i>)(<i>x</i>−<i>p</i>−2)</span>입니다.</p>
+        <div class="scroll"><table>
+          <tr><th style="width:36%">어느 것이 0인가</th><th>그 해</th></tr>
+          <tr><td class="m"><i>f</i>(<i>x</i>) = 0</td><td class="m"><i>x</i> = <i>p</i>, &nbsp; <i>x</i> = <i>p</i>+3</td></tr>
+          <tr><td class="m"><i>f</i>(<i>x</i>−3) = 0</td><td class="m"><i>x</i> = <i>p</i>+3, &nbsp; <i>x</i> = <i>p</i>+6</td></tr>
+          <tr><td class="m"><i>f</i>′(<i>x</i>) = 0</td><td class="m"><i>x</i> = <i>p</i>, &nbsp; <i>x</i> = <i>p</i>+2</td></tr>
+          <tr><td>모두 모으면</td><td class="m"><b><i>p</i>, &nbsp;<i>p</i>+2, &nbsp;<i>p</i>+3, &nbsp;<i>p</i>+6</b> — 언제나 서로 다른 네 개</td></tr>
+        </table></div>
+        <p>“서로 다른 네 실근”이 저절로 맞는다는 점이 이 형태가 옳았다는 검산입니다. 합을 세웁니다.</p>
+        <p class="eq m">4<i>p</i> + 11 = 7 &nbsp;⟹&nbsp; <i>p</i> = −1</p>
+        <p class="eq m"><i>f</i>(<i>x</i>) = (<i>x</i>+1)<sup>2</sup>(<i>x</i>−2), &nbsp; 네 근은 −1, 1, 2, 5</p>
+        <figure><div id="figA5"></div><figcaption>구한 <span class="m"><i>f</i></span>와 그때의 <span class="m"><i>g</i></span>. <span class="m"><i>g</i></span>는 값이 커서 세로로 눌러 그렸으니 근의 위치만 보면 됩니다. <span class="m"><i>x</i>=2</span>는 <span class="m"><i>f</i></span>의 단순근이지만 <span class="m"><i>f</i>(2−3)=<i>f</i>(−1)=0</span>이라 끊기지 않습니다.</figcaption></figure>
+      </div>
+    </section>
+  </div>
+
+  <div class="answer">
+    <p class="lab">예시문항 22번</p>
+    <p class="big m"><i>f</i>(5) = 6<sup>2</sup> × 3 = 108</p>
+    <details>
+      <summary>되짚기 체크리스트</summary>
+      <ul class="checklist">
+        <li>절댓값이 있는 극한을 <b>부호별로 나눠</b> 미분계수의 정의로 되돌렸는가</li>
+        <li><span class="m"><i>f</i></span>의 근에서 극한값이 <span class="m">0</span>임을 <b><span class="m"><i>f</i>(<i>a</i>)=0</span>을 분자에 끼워 넣어</b> 보였는가</li>
+        <li>연속 검사를 <b>경계(근)에서만</b> 했는가</li>
+        <li>(가)를 “<span class="m"><i>a</i></span>가 근이면 <span class="m"><i>a</i>−3</span>도 근”이라는 근끼리의 관계로 바꿨는가</li>
+        <li>근이 정확히 네 개라는 조건을 <b>검산</b>으로 썼는가</li>
+      </ul>
+    </details>
+  </div>
+</main>
+
+<!-- ======================= 문항 B ======================= -->
+<main id="B" hidden>
+  <section class="hero">
+    <h1>두 조건을 각각 부등식 하나로</h1>
+    <p>(가)는 극솟값의 부호 문제로, (나)는 양 끝 후보값의 크기 비교로 바뀝니다. 남는 일은 격자점 세기뿐입니다. 아래 슬라이더로 두 조건이 언제 켜지는지 직접 확인할 수 있습니다.</p>
+  </section>
+
+  <div class="problem">
+    <span class="no">22.</span><span class="src">2022학년도 9월 모의평가 · 4점</span>
+    <p class="stmt">함수</p>
+    <p class="eq m"><i>f</i>(<i>x</i>) = <i>x</i><sup>3</sup> − 3<i>p</i><i>x</i><sup>2</sup> + <i>q</i></p>
+    <p class="stmt">가 다음 조건을 만족시키도록 하는 <span class="m">25</span> 이하의 두 자연수 <span class="m"><i>p</i>, <i>q</i></span>의 모든 순서쌍 <span class="m">(<i>p</i>, <i>q</i>)</span>의 개수를 구하시오.</p>
+    <div class="cond">
+      <p><b>(가)</b> 함수 <span class="m">|<i>f</i>(<i>x</i>)|</span>가 <span class="m"><i>x</i>=<i>a</i></span>에서 극대 또는 극소가 되도록 하는 모든 실수 <span class="m"><i>a</i></span>의 개수는 <span class="m">5</span>이다.</p>
+      <p><b>(나)</b> 닫힌구간 <span class="m">[−1, 1]</span>에서 <span class="m">|<i>f</i>(<i>x</i>)|</span>의 최댓값과 닫힌구간 <span class="m">[−2, 2]</span>에서 <span class="m">|<i>f</i>(<i>x</i>)|</span>의 최댓값은 같다.</p>
+    </div>
+  </div>
+
+  <div class="steps">
+
+    <section class="step" id="b1">
+      <div class="dot">1</div>
+      <h3>극점의 위치를 고정</h3>
+      <p class="lead"><span class="m"><i>p</i></span>가 자연수라는 조건이 그래프 모양을 거의 결정합니다.</p>
+      <div class="quiz" data-answer="0">
+        <p class="q"><span class="m"><i>f</i>′(<i>x</i>) = 3<i>x</i>(<i>x</i>−2<i>p</i>)</span>입니다. 극댓값과 극솟값은?</p>
+        <div class="opts">
+          <button class="opt"><span class="mark">①</span><span class="m"><i>x</i>=0</span>에서 극대 <span class="m"><i>q</i></span>, <span class="m"><i>x</i>=2<i>p</i></span>에서 극소 <span class="m"><i>q</i>−4<i>p</i><sup>3</sup></span></button>
+          <button class="opt"><span class="mark">②</span><span class="m"><i>x</i>=0</span>에서 극소 <span class="m"><i>q</i></span>, <span class="m"><i>x</i>=2<i>p</i></span>에서 극대 <span class="m"><i>q</i>−4<i>p</i><sup>3</sup></span></button>
+          <button class="opt"><span class="mark">③</span><span class="m"><i>x</i>=0</span>에서 극대 <span class="m"><i>q</i></span>, <span class="m"><i>x</i>=2<i>p</i></span>에서 극소 <span class="m"><i>q</i>−8<i>p</i><sup>3</sup></span></button>
+          <button class="opt"><span class="mark">④</span>극값이 없다</button>
+        </div>
+        <div class="fb"></div>
+        <button class="skip">답 없이 해설 열기</button>
+      </div>
+      <div class="reveal">
+        <p><span class="m"><i>p</i> ≥ 1</span>이므로 <span class="m">2<i>p</i> ≥ 2 &gt; 0</span>. 최고차항 계수가 양수인 삼차함수이므로 왼쪽이 극대, 오른쪽이 극소입니다.</p>
+        <p class="eq m"><i>f</i>(2<i>p</i>) = 8<i>p</i><sup>3</sup> − 12<i>p</i><sup>3</sup> + <i>q</i> = <i>q</i> − 4<i>p</i><sup>3</sup></p>
+        <div class="crit">
+          <h4>여기서 확보한 것</h4>
+          <ul>
+            <li>극댓값 <span class="m"><i>f</i>(0) = <i>q</i> &gt; 0</span> (<span class="m"><i>q</i></span>가 자연수이므로 항상)</li>
+            <li><span class="m"><i>f</i></span>는 <span class="m">[−2, 0]</span>에서 증가, <span class="m">[0, 2]</span>에서 감소 — <span class="m">2<i>p</i> ≥ 2</span>라 구간 안에 다른 극점이 없습니다</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" id="b2">
+      <div class="dot">2</div>
+      <h3>(가): 극점 5개의 뜻</h3>
+      <p class="lead"><span class="m">|<i>f</i>|</span>의 극점은 두 군데서 생깁니다.</p>
+      <div class="quiz" data-answer="1">
+        <p class="q"><span class="m">|<i>f</i>|</span>가 극대 또는 극소인 점은 어디서 나옵니까?</p>
+        <div class="opts">
+          <button class="opt"><span class="mark">①</span><span class="m"><i>f</i></span>의 극점에서만</button>
+          <button class="opt"><span class="mark">②</span><span class="m"><i>f</i></span>의 극점과, <span class="m"><i>f</i></span>의 부호가 바뀌는 근에서</button>
+          <button class="opt"><span class="mark">③</span><span class="m"><i>f</i></span>의 근에서만</button>
+          <button class="opt"><span class="mark">④</span><span class="m"><i>x</i></span>축과 만나는 모든 점에서</button>
+        </div>
+        <div class="fb"></div>
+        <button class="skip">답 없이 해설 열기</button>
+      </div>
+      <div class="reveal">
+        <p><span class="m"><i>f</i></span>의 극대·극소는 절댓값을 씌워도 그대로 극점으로 남고, <span class="m"><i>x</i></span>축을 뚫고 지나가는 근에서는 <span class="m">|<i>f</i>|</span>가 <span class="m">0</span>을 찍고 되올라가 극소가 됩니다. 실근 개수로 세어 봅니다.</p>
+        <div class="scroll"><table>
+          <tr><th>실근</th><th>극점 개수</th><th>조건</th></tr>
+          <tr><td>서로 다른 3개</td><td><b>2 + 3 = 5</b></td><td class="m"><i>q</i> − 4<i>p</i><sup>3</sup> &lt; 0</td></tr>
+          <tr><td>중근 포함 2개</td><td>3 (근이 극점과 겹침)</td><td class="m"><i>q</i> − 4<i>p</i><sup>3</sup> = 0</td></tr>
+          <tr><td>1개</td><td>2 + 1 = 3</td><td class="m"><i>q</i> − 4<i>p</i><sup>3</sup> &gt; 0</td></tr>
+        </table></div>
+        <div class="crit">
+          <h4>(가)의 번역</h4>
+          <p class="eq m" style="margin:4px 0"><i>q</i> &lt; 4<i>p</i><sup>3</sup></p>
+          <p style="color:var(--ink-2)">극댓값이 이미 양수이므로 실근이 셋이려면 극솟값만 음수이면 됩니다. <span class="m"><i>q</i> ≤ 25</span>라서 <span class="m"><i>p</i> ≥ 2</span>이면 <span class="m">4<i>p</i><sup>3</sup> ≥ 32</span>로 저절로 만족됩니다. 실질적으로 <span class="m"><i>p</i>=1</span>만 걸러냅니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" id="b3">
+      <div class="dot">3</div>
+      <h3>(나): 구간을 넓혀도 안 커진다</h3>
+      <p class="lead"><span class="m">[−1,1] ⊂ [−2,2]</span>이므로 최댓값은 넓은 쪽이 항상 크거나 같습니다. 같다는 말은 넓힌 부분이 더 큰 값을 만들지 못했다는 뜻입니다.</p>
+      <div class="quiz" data-answer="2">
+        <p class="q"><span class="m">[−2,2]</span>에서 <span class="m">|<i>f</i>|</span>의 최댓값 후보 두 개는?</p>
+        <div class="opts">
+          <button class="opt"><span class="mark">①</span><span class="m"><i>f</i>(0)</span>과 <span class="m"><i>f</i>(2<i>p</i>)</span></button>
+          <button class="opt"><span class="mark">②</span><span class="m"><i>f</i>(2)</span>와 <span class="m"><i>f</i>(−2)</span></button>
+          <button class="opt"><span class="mark">③</span><span class="m"><i>f</i>(0) = <i>q</i></span>와 <span class="m">−<i>f</i>(−2) = 12<i>p</i>+8−<i>q</i></span></button>
+          <button class="opt"><span class="mark">④</span><span class="m"><i>f</i>(0)</span>과 <span class="m"><i>f</i>(1)</span></button>
+        </div>
+        <div class="fb"></div>
+        <button class="skip">답 없이 해설 열기</button>
+      </div>
+      <div class="reveal">
+        <p><span class="m"><i>f</i></span>는 <span class="m">[−2,0]</span>에서 증가, <span class="m">[0,2]</span>에서 감소하므로 최대는 <span class="m"><i>f</i>(0)=<i>q</i></span>, 최소는 왼쪽 끝 <span class="m"><i>f</i>(−2) = <i>q</i>−12<i>p</i>−8</span>입니다 (<span class="m"><i>f</i>(−2) &lt; <i>f</i>(2)</span>).</p>
+        <p>좁은 구간에서도 최대는 <span class="m"><i>q</i></span>, 최소는 <span class="m"><i>f</i>(−1) = <i>q</i>−3<i>p</i>−1</span>. 두 구간의 <span class="m">|<i>f</i>|</span> 최댓값이 같으려면 왼쪽 끝이 <span class="m">−<i>q</i></span>보다 아래로 내려가지 않으면 됩니다.</p>
+        <p class="eq m">12<i>p</i>+8−<i>q</i> ≤ <i>q</i></p>
+        <div class="crit">
+          <h4>(나)의 번역</h4>
+          <p class="eq m" style="margin:4px 0"><i>q</i> ≥ 6<i>p</i> + 4</p>
+          <p style="color:var(--ink-2)">이때 <span class="m">|<i>f</i>(−1)| ≤ <i>q</i></span>도 따라오므로 두 구간의 최댓값이 모두 <span class="m"><i>q</i></span>가 됩니다. 반대로 <span class="m"><i>q</i> &lt; 6<i>p</i>+4</span>이면 <span class="m">|<i>f</i>(−2)|</span>가 좁은 구간의 어떤 값보다도 커져 반드시 어긋납니다.</p>
+        </div>
+        <figure>
+          <div class="ctrl">
+            <label><span class="m"><i>p</i></span> <input type="range" id="sp" min="1" max="5" step="1" value="2"><span class="val m" id="vp">2</span></label>
+            <label><span class="m"><i>q</i></span> <input type="range" id="sq" min="1" max="25" step="1" value="16"><span class="val m" id="vq">16</span></label>
+          </div>
+          <div class="badges">
+            <span class="badge" id="bdA">(가)</span>
+            <span class="badge" id="bdB">(나)</span>
+          </div>
+          <div id="figB1"></div>
+          <figcaption>진한 곡선이 <span class="m">|<i>f</i>|</span>, 점선이 <span class="m"><i>f</i></span>. 세로 띠가 <span class="m">[−2,2]</span>, 그 안의 진한 띠가 <span class="m">[−1,1]</span>. 가로 점선 두 개가 각 구간의 <span class="m">|<i>f</i>|</span> 최댓값이며, 두 선이 포개질 때 (나)가 성립합니다.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="step" id="b4">
+      <div class="dot">4</div>
+      <h3>격자점 세기</h3>
+      <p class="lead">남은 일은 두 부등식을 동시에 만족하는 자연수 쌍을 세는 것입니다.</p>
+      <div class="quiz" data-answer="1">
+        <p class="q"><span class="m">6<i>p</i>+4 ≤ <i>q</i> &lt; 4<i>p</i><sup>3</sup></span>, <span class="m"><i>q</i> ≤ 25</span>. <span class="m"><i>p</i></span>가 가질 수 있는 값은?</p>
+        <div class="opts">
+          <button class="opt"><span class="mark">①</span><span class="m"><i>p</i> = 1, 2, 3</span></button>
+          <button class="opt"><span class="mark">②</span><span class="m"><i>p</i> = 2, 3</span></button>
+          <button class="opt"><span class="mark">③</span><span class="m"><i>p</i> = 1, 2, 3, 4</span></button>
+          <button class="opt"><span class="mark">④</span><span class="m"><i>p</i> = 2, 3, 4</span></button>
+        </div>
+        <div class="fb"></div>
+        <button class="skip">답 없이 해설 열기</button>
+      </div>
+      <div class="reveal">
+        <div class="scroll"><table>
+          <tr><th class="m"><i>p</i></th><th class="m">6<i>p</i>+4 ≤ <i>q</i></th><th class="m"><i>q</i> &lt; 4<i>p</i><sup>3</sup></th><th>가능한 <span class="m"><i>q</i></span></th><th>개수</th></tr>
+          <tr><td class="m">1</td><td class="m"><i>q</i> ≥ 10</td><td class="m"><i>q</i> &lt; 4</td><td>없음</td><td>0</td></tr>
+          <tr><td class="m">2</td><td class="m"><i>q</i> ≥ 16</td><td class="m"><i>q</i> &lt; 32</td><td class="m">16 … 25</td><td><b>10</b></td></tr>
+          <tr><td class="m">3</td><td class="m"><i>q</i> ≥ 22</td><td class="m"><i>q</i> &lt; 108</td><td class="m">22 … 25</td><td><b>4</b></td></tr>
+          <tr><td class="m">≥ 4</td><td class="m"><i>q</i> ≥ 28</td><td>—</td><td><span class="m"><i>q</i> ≤ 25</span>와 충돌</td><td>0</td></tr>
+        </table></div>
+        <p>칸을 누르면 위 슬라이더가 그 <span class="m">(<i>p</i>, <i>q</i>)</span>로 옮겨 갑니다.</p>
+        <div class="gridwrap"><div id="pqgrid"></div></div>
+        <div class="legend">
+          <span><span class="sw" style="background:var(--teal)"></span>두 조건 모두</span>
+          <span><span class="sw" style="background:color-mix(in srgb,var(--blue) 26%,transparent)"></span>(가)만</span>
+          <span><span class="sw" style="background:color-mix(in srgb,var(--amber) 26%,transparent)"></span>(나)만</span>
+          <span><span class="sw"></span>둘 다 아님</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="answer">
+    <p class="lab">9월 모의평가 22번</p>
+    <p class="big m">10 + 4 = 14</p>
+    <details>
+      <summary>되짚기 체크리스트</summary>
+      <ul class="checklist">
+        <li><span class="m"><i>p</i></span>가 자연수라는 조건에서 <b><span class="m">2<i>p</i> ≥ 2</span></b>를 끌어내 구간 안 극점 문제를 없앴는가</li>
+        <li><span class="m">|<i>f</i>|</span>의 극점을 <b>극점 + 부호가 바뀌는 근</b>으로 분해해 셌는가</li>
+        <li>극점 개수 조건을 <b>극솟값의 부호</b> 하나로 압축했는가</li>
+        <li>최댓값 조건을 <b>양쪽 후보값의 비교</b>로 바꿔 부등식 하나로 만들었는가</li>
+        <li>마지막에 <span class="m"><i>q</i> ≤ 25</span>라는 범위를 빠뜨리지 않았는가</li>
+      </ul>
+    </details>
+  </div>
+</main>
+
+<p class="tail">두 문항 모두 절댓값이 씌워진 삼차함수를 다루지만 묻는 각도가 다릅니다. 예시문항은 <span class="m"><i>x</i></span>축을 뚫는 근에서 생기는 <b>부호 뒤집힘</b>을, 9월은 그 근에서 생기는 <b>새 극점</b>과 구간 최댓값을 묻습니다. 같이 놓고 풀면 “절댓값을 씌우면 <span class="m"><i>f</i></span>의 근에서 새 사건이 생긴다”는 한 문장으로 묶입니다.</p>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- 그래프 그리기 ---------- */
+function svgPlot(spec){
+  var W = 680, H = spec.h || 320;
+  var pad = {l:40, r:16, t:16, b:30};
+  var x0 = spec.xmin, x1 = spec.xmax, N = 900;
+  var ymin = spec.ymin, ymax = spec.ymax;
+  if(ymin === undefined || ymax === undefined){
+    var lo = Infinity, hi = -Infinity;
+    spec.curves.forEach(function(c){
+      for(var i=0;i<=N;i++){
+        var x = x0 + (x1-x0)*i/N, y = c.f(x);
+        if(isFinite(y)){ if(y<lo) lo=y; if(y>hi) hi=y; }
+      }
+    });
+    if(!isFinite(lo)){ lo=-1; hi=1; }
+    var py = (hi-lo)*0.12 || 1;
+    if(ymin===undefined) ymin = lo-py;
+    if(ymax===undefined) ymax = hi+py;
+  }
+  function X(x){ return pad.l + (x-x0)/(x1-x0)*(W-pad.l-pad.r); }
+  function Y(y){ return pad.t + (ymax-y)/(ymax-ymin)*(H-pad.t-pad.b); }
+
+  var o = ['<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+(spec.alt||'그래프')+'">'];
+
+  (spec.bands||[]).forEach(function(b){
+    o.push('<rect x="'+X(b.x0).toFixed(1)+'" y="'+pad.t+'" width="'+(X(b.x1)-X(b.x0)).toFixed(1)+
+      '" height="'+(H-pad.t-pad.b).toFixed(1)+'" fill="'+b.fill+'"/>');
+  });
+
+  var yz = (0>=ymin && 0<=ymax) ? Y(0) : null;
+  var xz = (0>=x0 && 0<=x1) ? X(0) : null;
+  o.push('<g stroke="var(--rule)" stroke-width="1">');
+  if(yz!==null) o.push('<line x1="'+pad.l+'" y1="'+yz.toFixed(1)+'" x2="'+(W-pad.r)+'" y2="'+yz.toFixed(1)+'"/>');
+  if(xz!==null) o.push('<line x1="'+xz.toFixed(1)+'" y1="'+pad.t+'" x2="'+xz.toFixed(1)+'" y2="'+(H-pad.b)+'"/>');
+  o.push('</g>');
+
+  var step = spec.xtick || 1;
+  o.push('<g font-size="11" fill="var(--ink-3)" text-anchor="middle" font-family="Noto Serif, Georgia, serif">');
+  for(var t=Math.ceil(x0/step)*step; t<=x1+1e-9; t+=step){
+    if(Math.abs(t)<1e-9) continue;
+    var px = X(t), base = (yz!==null?yz:H-pad.b);
+    o.push('<line x1="'+px.toFixed(1)+'" y1="'+(base-3).toFixed(1)+'" x2="'+px.toFixed(1)+'" y2="'+(base+3).toFixed(1)+'" stroke="var(--rule)"/>');
+    o.push('<text x="'+px.toFixed(1)+'" y="'+(base+16).toFixed(1)+'">'+(+t.toFixed(2))+'</text>');
+  }
+  o.push('</g>');
+
+  (spec.segs||[]).forEach(function(s){
+    o.push('<line x1="'+X(s.x0).toFixed(1)+'" y1="'+Y(s.y0).toFixed(1)+'" x2="'+X(s.x1).toFixed(1)+'" y2="'+Y(s.y1).toFixed(1)+
+      '" stroke="'+s.color+'" stroke-width="'+(s.w||1.3)+'" stroke-dasharray="'+(s.dash||'4 3')+'"/>');
+  });
+
+  (spec.hlines||[]).forEach(function(l){
+    if(l.y<ymin||l.y>ymax) return;
+    o.push('<line x1="'+pad.l+'" y1="'+Y(l.y).toFixed(1)+'" x2="'+(W-pad.r)+'" y2="'+Y(l.y).toFixed(1)+
+      '" stroke="'+l.color+'" stroke-width="'+(l.w||1.5)+'" stroke-dasharray="'+(l.dash||'5 4')+'"/>');
+    if(l.label) o.push('<text x="'+(W-pad.r-4)+'" y="'+(Y(l.y)-5).toFixed(1)+'" font-size="11.5" text-anchor="end" fill="'+l.color+'">'+l.label+'</text>');
+  });
+
+  spec.curves.forEach(function(c, ci){
+    var breaks = (c.breaks||[]).slice().sort(function(a,b){return a-b;});
+    var segs = [], s = x0;
+    breaks.forEach(function(b){ if(b>x0 && b<x1){ segs.push([s,b]); s=b; } });
+    segs.push([s,x1]);
+    var d = '';
+    segs.forEach(function(sg){
+      var a = sg[0] + (sg[0]>x0?1e-6:0), b = sg[1] - (sg[1]<x1?1e-6:0);
+      var M = Math.max(8, Math.round(N*(b-a)/(x1-x0))), pen = false;
+      for(var i=0;i<=M;i++){
+        var x = a + (b-a)*i/M, y = c.f(x);
+        if(!isFinite(y) || y<ymin-(ymax-ymin)*0.5 || y>ymax+(ymax-ymin)*0.5){ pen=false; continue; }
+        var yy = Math.max(ymin, Math.min(ymax, y));
+        d += (pen?'L':'M') + X(x).toFixed(1) + ' ' + Y(yy).toFixed(1) + ' ';
+        pen = true;
+      }
+    });
+    o.push('<path d="'+d+'" fill="none" stroke="'+c.color+'" stroke-width="'+(c.w||2)+'" '+
+      (c.dash?'stroke-dasharray="'+c.dash+'" ':'')+'stroke-linejoin="round" stroke-linecap="round" pathLength="1" class="'+
+      (spec.animate?('draw'+(ci?' d2':'')):'')+'"/>');
+    if(c.label){
+      var lx = c.labelAt!==undefined ? c.labelAt : x0+(x1-x0)*0.82, ly = c.f(lx);
+      if(isFinite(ly) && ly>ymin && ly<ymax)
+        o.push('<text x="'+(X(lx)+6).toFixed(1)+'" y="'+(Y(ly)-7).toFixed(1)+'" font-size="12.5" fill="'+c.color+
+          '" font-family="Noto Serif, Georgia, serif" class="'+(spec.animate?'fadein':'')+'">'+c.label+'</text>');
+    }
+  });
+
+  (spec.points||[]).forEach(function(p){
+    if(p.y<ymin||p.y>ymax) return;
+    o.push('<circle cx="'+X(p.x).toFixed(1)+'" cy="'+Y(p.y).toFixed(1)+'" r="'+(p.r||4)+'" fill="'+(p.open?'var(--panel)':p.color)+
+      '" stroke="'+p.color+'" stroke-width="1.6" class="'+(spec.animate?'fadein':'')+'"/>');
+    if(p.label) o.push('<text x="'+(X(p.x)+(p.dx||0)).toFixed(1)+'" y="'+(Y(p.y)+(p.dy||-11)).toFixed(1)+
+      '" font-size="12" text-anchor="middle" fill="'+p.color+'" font-family="Noto Serif, Georgia, serif" class="'+
+      (spec.animate?'fadein':'')+'">'+p.label+'</text>');
+  });
+
+  o.push('</svg>');
+  return o.join('');
+}
+
+var C = { blue:'var(--blue)', teal:'var(--teal)', red:'var(--red)', mute:'var(--ink-3)' };
+
+/* ---------- 문항 A ---------- */
+// 조건을 어기는 예시: 서로 다른 세 실근
+function f0(x){ return (x+1)*(x-1)*(x-3); }
+function f0p(x){ return 3*x*x - 6*x - 1; }
+// 구한 함수
+function fA(x){ return (x+1)*(x+1)*(x-2); }
+function fAp(x){ return 3*(x+1)*(x-1); }
+// g(x) = f(x-3) × (극한값). 극한값은 f의 부호로 결정.
+function gMake(f, fp){
+  return function(x){
+    var v = f(x);
+    if(v === 0) return 0;
+    return f(x-3) * (v > 0 ? 2*fp(x) : -2*fp(x));
+  };
+}
+var g0 = gMake(f0, f0p), gA = gMake(fA, fAp);
+
+function drawA1(){
+  document.getElementById('figA1').innerHTML = svgPlot({
+    xmin:-2, xmax:4, h:310, animate:true, alt:'f와 절댓값 f',
+    curves:[
+      {f:f0, color:C.mute, w:1.8, dash:'4 4', label:'y = f(x)', labelAt:3.5},
+      {f:function(x){return Math.abs(f0(x));}, color:C.blue, w:2.4, label:'y = |f(x)|', labelAt:3.5}
+    ],
+    points:[{x:-1,y:0,color:C.red},{x:1,y:0,color:C.red},{x:3,y:0,color:C.red}]
+  });
+}
+function drawA2(){
+  var a = 1, h = 0.32;
+  document.getElementById('figA2').innerHTML = svgPlot({
+    xmin:0.3, xmax:1.7, h:280, xtick:0.5, animate:true, alt:'근 근처 확대',
+    curves:[
+      {f:f0, color:C.mute, w:1.8, dash:'4 4'},
+      {f:function(x){return Math.abs(f0(x));}, color:C.blue, w:2.4}
+    ],
+    segs:[
+      {x0:a-h, y0:0, x1:a-h, y1:Math.abs(f0(a-h)), color:C.teal},
+      {x0:a+h, y0:0, x1:a+h, y1:Math.abs(f0(a+h)), color:C.teal}
+    ],
+    points:[
+      {x:a-h, y:Math.abs(f0(a-h)), color:C.teal, label:'|f(a−h)|', dy:-12},
+      {x:a+h, y:Math.abs(f0(a+h)), color:C.teal, label:'|f(a+h)|', dy:-12},
+      {x:a, y:0, color:C.red, label:'a', dy:18}
+    ]
+  });
+}
+function drawA3(){
+  document.getElementById('figA3').innerHTML = svgPlot({
+    xmin:-1.8, xmax:4.6, h:300, ymin:-210, ymax:210, animate:true, alt:'불연속인 g',
+    curves:[{f:g0, color:C.teal, w:2.3, breaks:[-1,1,3], label:'y = g(x)', labelAt:4.1}],
+    points:[{x:-1,y:0,color:C.red},{x:1,y:0,color:C.red},{x:3,y:0,color:C.red}]
+  });
+}
+
+var caseData = [
+  { name:'서로 다른 세 실근', f:function(x){return (x+1)*(x-1)*(x-3);}, xmin:-2.2, xmax:4.2,
+    cap:'가장 작은 근도 부호가 바뀌는 단순근이므로 그보다 3 작은 값이 또 근이어야 합니다. 그 근이 다시 3 작은 근을 부르고, 끝없이 내려가 모순입니다.',
+    v:'no', vt:'(가) 불가' },
+  { name:'실근 한 개', f:function(x){return (x-1)*(x*x+1);}, xmin:-1.5, xmax:3.5,
+    cap:'유일한 근 a에서 부호가 바뀌므로 a−3도 근이어야 하는데, 근은 a 하나뿐입니다. a−3 = a는 불가능.',
+    v:'no', vt:'(가) 불가' },
+  { name:'삼중근', f:function(x){return Math.pow(x-1,3);}, xmin:-1, xmax:3,
+    cap:'f′(t)=0이라 (가)는 저절로 성립합니다. 그런데 f(x)=0, f(x−3)=0, f′(x)=0을 모아도 x = t와 x = t+3 두 개뿐이라 (나)의 네 실근에 못 미칩니다.',
+    v:'no', vt:'(나) 불가' },
+  { name:'중근 + 단순근', f:function(x){return (x+1)*(x+1)*(x-2);}, xmin:-2.6, xmax:3.4,
+    cap:'조건이 걸리는 근은 단순근 하나뿐이고, 그 근에서 3을 뺀 값이 중근이면 구조가 닫힙니다. 중근 쪽은 f′=0이라 자동 통과.',
+    v:'ok', vt:'생존' }
+];
+function drawCase(i){
+  var d = caseData[i];
+  document.getElementById('figA4').innerHTML = svgPlot({
+    xmin:d.xmin, xmax:d.xmax, h:270, animate:true, alt:d.name,
+    curves:[{f:d.f, color:(d.v==='ok'?C.teal:C.blue), w:2.3, label:'y = f(x)'}]
+  });
+  document.getElementById('capA4').innerHTML =
+    '<b>'+d.name+'</b><span class="verdict '+d.v+'">'+d.vt+'</span><br>'+d.cap;
+}
+
+function drawA5(){
+  document.getElementById('figA5').innerHTML =
+    svgPlot({
+      xmin:-2.4, xmax:5.6, h:280, ymin:-16, ymax:34, animate:true, alt:'구한 f',
+      curves:[{f:fA, color:C.blue, w:2.3, label:'y = f(x)', labelAt:4.4}],
+      points:[{x:-1,y:0,color:C.blue,label:'중근'},{x:2,y:0,color:C.blue,label:'단순근'}]
+    }) +
+    svgPlot({
+      xmin:-2.4, xmax:5.6, h:260, ymin:-260, ymax:260, animate:true, alt:'g의 그래프',
+      curves:[{f:gA, color:C.teal, w:2.3, breaks:[2], label:'y = g(x)', labelAt:4.9}],
+      points:[{x:-1,y:0,color:C.red,label:'−1'},{x:1,y:0,color:C.red,label:'1'},
+              {x:2,y:0,color:C.red,label:'2'},{x:5,y:0,color:C.red,label:'5'}]
+    });
+}
+
+/* ---------- 문항 B ---------- */
+function drawB(){
+  var p = +document.getElementById('sp').value,
+      q = +document.getElementById('sq').value;
+  document.getElementById('vp').textContent = p;
+  document.getElementById('vq').textContent = q;
+
+  var f = function(x){ return x*x*x - 3*p*x*x + q; };
+  var af = function(x){ return Math.abs(f(x)); };
+  var m1 = Math.max(q, Math.abs(f(-1)), Math.abs(f(1)));
+  var m2 = Math.max(m1, Math.abs(f(-2)), Math.abs(f(2)));
+  var okA = q < 4*p*p*p, okB = Math.abs(m1-m2) < 1e-9;
+
+  var bA = document.getElementById('bdA'), bB = document.getElementById('bdB');
+  bA.className = 'badge ' + (okA?'y':'n');
+  bA.textContent = '(가) 극점 ' + (okA?5:3) + '개 — ' + (okA?'만족':'불만족');
+  bB.className = 'badge ' + (okB?'y':'n');
+  bB.textContent = '(나) ' + m1.toFixed(0) + ' vs ' + m2.toFixed(0) + ' — ' + (okB?'만족':'불만족');
+
+  var hi = Math.max(m2*1.15, q*1.2);
+  document.getElementById('figB1').innerHTML = svgPlot({
+    xmin:-2.8, xmax:Math.max(3.2, 2*p+1.2), h:320, ymin:-hi, ymax:hi, alt:'f와 |f|',
+    bands:[
+      {x0:-2, x1:2, fill:'color-mix(in srgb, var(--blue) 7%, transparent)'},
+      {x0:-1, x1:1, fill:'color-mix(in srgb, var(--blue) 14%, transparent)'}
+    ],
+    hlines:[
+      {y:m2, color:C.red, label:'[−2,2] 최댓값 ' + m2.toFixed(0), dash:'6 4'},
+      {y:m1, color:C.teal, label:'[−1,1] 최댓값 ' + m1.toFixed(0), dash:'2 4'}
+    ],
+    curves:[{f:f, color:C.mute, w:1.6, dash:'4 4'},{f:af, color:C.blue, w:2.4}],
+    points:[{x:-2,y:f(-2),color:C.red,label:'f(−2)',dy:16},{x:0,y:q,color:C.blue,label:'q'}]
+  });
+  markGrid(p,q);
+}
+
+var gridBuilt = false;
+function buildGridOnce(){
+  if(!gridBuilt){
+    var h = '<table class="pq"><tr><th></th>';
+    for(var q=1;q<=25;q++) h += '<th>'+((q%5===0||q===1)?q:'')+'</th>';
+    h += '</tr>';
+    for(var p=1;p<=5;p++){
+      h += '<tr><th>p='+p+'</th>';
+      for(var q2=1;q2<=25;q2++){
+        var a = q2 < 4*p*p*p, b = q2 >= 6*p+4;
+        var cls = (a&&b) ? 'c-both' : a ? 'c-a' : b ? 'c-b' : '';
+        h += '<td class="'+cls+'" data-p="'+p+'" data-q="'+q2+'"><button type="button" aria-label="p='+p+', q='+q2+'"></button></td>';
+      }
+      h += '</tr>';
+    }
+    h += '</table>';
+    var el = document.getElementById('pqgrid');
+    el.innerHTML = h;
+    el.addEventListener('click', function(e){
+      var td = e.target.closest('td'); if(!td) return;
+      document.getElementById('sp').value = td.dataset.p;
+      document.getElementById('sq').value = td.dataset.q;
+      drawB();
+      document.getElementById('figB1').scrollIntoView({block:'center', behavior:'smooth'});
+    });
+    gridBuilt = true;
+  }
+  drawB();
+}
+function markGrid(p,q){
+  var el = document.getElementById('pqgrid'); if(!el) return;
+  el.querySelectorAll('td.sel').forEach(function(t){ t.classList.remove('sel'); });
+  var t = el.querySelector('td[data-p="'+p+'"][data-q="'+q+'"]');
+  if(t) t.classList.add('sel');
+}
+
+/* ---------- 퀴즈 ---------- */
+var feedback = {
+  a1:['한 번만 센 값입니다. 분자에 f(x)를 더하고 빼면 미분계수가 두 개 나옵니다.',
+      'f(x+h)−f(x)와 f(x)−f(x−h) 두 덩어리가 각각 f′(x)로 갑니다.',
+      '부호가 뒤집히는 것은 f(x) < 0일 때입니다.',
+      '절댓값은 f에 씌워져 있지 f′에 씌워진 것이 아닙니다.'],
+  a2:['f(a)=0이라 절댓값을 그대로 벗길 수 없습니다.',
+      '두 항이 각각 |f′(a)|로 가지만, 빼면 상쇄됩니다.',
+      '|f(a+h)|/h와 |f(a−h)|/h가 모두 |f′(a)|로 가므로 차가 0입니다.',
+      '두 극한이 각각 존재하므로 차의 극한도 존재합니다.'],
+  a3:['중근에서는 f′(a)=0이라 좌우극한이 모두 0이 되어 자동으로 연속입니다.',
+      '한쪽은 2f(a−3)f′(a), 다른 쪽은 그 부호를 바꾼 값이라 값 0과 어긋날 수 있습니다.',
+      '중근에서는 f의 부호가 바뀌지 않고 f′(a)=0이라 문제가 없습니다.',
+      'f(x−3)은 다항함수라 어디서나 연속입니다.'],
+  a4:['가장 작은 근이 자기보다 3 작은 근을 요구해 모순입니다.',
+      'a−3 = a가 되어야 해서 불가능합니다.',
+      '(가)는 통과하지만 g의 근이 두 개뿐이라 (나)에서 탈락합니다.',
+      '조건이 걸리는 근이 하나뿐이라 구조가 닫힙니다.'],
+  a5:['f(x)=0인 점에서도 g는 0입니다.',
+      'f(x)≠0인 곳에서 g = ±2f(x−3)f′(x)이므로 다른 근도 생깁니다.',
+      'f(x)=0인 경계와, 나머지 구간에서 두 인수가 0이 되는 점을 모두 모읍니다.',
+      'f(x−3)=0인 점도 빠졌습니다.'],
+  b1:['p ≥ 1이라 2p가 0보다 오른쪽이고, 최고차항 계수가 양수이므로 왼쪽이 극대입니다.',
+      '최고차항 계수가 양수인 삼차함수는 왼쪽 임계점이 극대입니다.',
+      'f(2p) = 8p³ − 12p³ + q 입니다. 계산을 다시 보세요.',
+      'f′(x)=3x(x−2p)는 서로 다른 두 근을 가집니다.'],
+  b2:['f의 극점만으로는 2개뿐이라 5가 될 수 없습니다.',
+      'x축을 뚫는 근에서 |f|가 0을 찍고 되올라가 극소가 됩니다.',
+      'f 자체의 극대·극소도 |f|의 극점으로 남습니다.',
+      '중근처럼 x축에 접하기만 하는 점은 이미 f의 극점과 같은 자리입니다.'],
+  b3:['2p는 구간 [−2,2] 밖(또는 끝점)이라 f(2p)는 후보가 아닙니다.',
+      'f(−2) < f(2)이므로 f(2)는 절댓값 최댓값 후보에서 밀립니다.',
+      '위로는 f(0)=q, 아래로는 f(−2)가 가장 멀리 갑니다.',
+      'f(1)은 f(2)보다도 0에 가깝습니다.'],
+  b4:['p=1이면 q ≥ 10과 q < 4가 동시에 성립할 수 없습니다.',
+      'p=1은 (가)에서, p ≥ 4는 q ≤ 25에서 막힙니다.',
+      'p=4면 q ≥ 28이 되어 25를 넘습니다.',
+      'p=1에서 두 부등식이 충돌합니다.']
+};
+var after = { a1:drawA1, a2:drawA2, a3:drawA3, a4:function(){drawCase(0);}, a5:drawA5,
+              b1:null, b2:null, b3:drawB, b4:buildGridOnce };
+
+document.querySelectorAll('.step').forEach(function(step){
+  var id = step.id,
+      quiz = step.querySelector('.quiz'),
+      reveal = step.querySelector('.reveal'),
+      fb = quiz.querySelector('.fb'),
+      ans = +quiz.dataset.answer,
+      opts = Array.prototype.slice.call(quiz.querySelectorAll('.opt'));
+
+  function open(){
+    if(reveal.classList.contains('on')) return;
+    reveal.classList.add('on');
+    step.classList.add('done');
+    if(after[id]) after[id]();
+  }
+  opts.forEach(function(btn, i){
+    btn.addEventListener('click', function(){
+      if(btn.disabled) return;
+      var right = (i === ans);
+      btn.classList.add(right ? 'pick-ok' : 'pick-no');
+      fb.className = 'fb show ' + (right ? 'ok' : 'no');
+      fb.textContent = (right ? '맞습니다. ' : '다시 보세요. ') + (feedback[id] ? feedback[id][i] : '');
+      if(right){
+        opts.forEach(function(b){ b.disabled = true; });
+        opts[ans].classList.add('pick-ok');
+        open();
+      }
+    });
+  });
+  quiz.querySelector('.skip').addEventListener('click', function(){
+    opts.forEach(function(b){ b.disabled = true; });
+    opts[ans].classList.add('pick-ok');
+    fb.className = 'fb show ok';
+    fb.textContent = '정답은 ' + '①②③④'[ans] + '번입니다. ' + (feedback[id] ? feedback[id][ans] : '');
+    open();
+  });
+});
+
+document.getElementById('caseTabs').addEventListener('click', function(e){
+  var b = e.target.closest('.case'); if(!b) return;
+  this.querySelectorAll('.case').forEach(function(x){ x.setAttribute('aria-selected', String(x===b)); });
+  drawCase(+b.dataset.c);
+});
+document.getElementById('sp').addEventListener('input', drawB);
+document.getElementById('sq').addEventListener('input', drawB);
+
+document.querySelectorAll('.tab').forEach(function(tab){
+  tab.addEventListener('click', function(){
+    document.querySelectorAll('.tab').forEach(function(t){ t.setAttribute('aria-selected', String(t===tab)); });
+    document.getElementById('A').hidden = (tab.dataset.panel !== 'A');
+    document.getElementById('B').hidden = (tab.dataset.panel !== 'B');
+    window.scrollTo({top:0});
+  });
+});
+})();
+</script>
+</body>
+</html>
